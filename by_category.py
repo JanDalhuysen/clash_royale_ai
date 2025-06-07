@@ -1,5 +1,4 @@
 import re
-import numpy as np
 from clash_utils import find_closest_match
 
 # Original list of card names
@@ -23,8 +22,8 @@ original_list = [
 "SkeletonBarrelCard",
 "GoblinGangCard",
 "EliteBarbariansCard",
-"MinionHordeCard",
-"FirecrackerCard",
+"MinionHorde Card",
+" FirecrackerCard",
 "RascalsCard",
 "MiniPEKKACard",
 "MusketeerCard",
