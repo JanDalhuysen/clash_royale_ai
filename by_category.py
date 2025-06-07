@@ -921,3 +921,52 @@ html_content = """
 
     </main>
 """
+
+def extract_categories_and_cards(html):
+    # This pattern finds h3 or h4 headings and the following div with class "mb-4 flex flex-wrap items-center"
+    pattern = re.compile(r'<(h3|h4)\b[^>]*>([^<]*)</\1>\s*<div\b[^>]*class="[^"]*mb-4 flex flex-wrap items-center[^"]*"[^>]*?>(.*?)</div>', re.DOTALL)
+    categories = {}
+    for match in pattern.finditer(html):
+        category_name = match.group(2).strip()
+        div_content = match.group(3)
+        alt_texts = re.findall(r'alt="([^"]+)"', div_content)
+        categories[category_name] = alt_texts
+    return categories
+
+def find_closest_match(card_name, original_list):
+    closest_match = get_close_matches(card_name, original_list, n=1)
+    return closest_match[0] if closest_match else None
+
+# Extract categories and their cards from HTML
+categories_dict = extract_categories_and_cards(html_content)
+
+# Process each category: convert to the matching card name from original_list
+category_arrays = {}
+for category, cards in categories_dict.items():
+    matched_cards = []
+    for card in cards:
+        closest_match = find_closest_match(card, original_list)
+        if closest_match:
+            matched_cards.append(closest_match)
+    category_arrays[category] = matched_cards
+
+# Print the arrays for each category
+for category, cards in category_arrays.items():
+    print(f"Category '{category}': {cards}")
+    print(f"Count: {len(cards)}")
+    print()
+
+# Total cards in the original list
+print(f"Total cards in original list: {len(original_list)}")
+
+# Count and display unmatched cards
+matched_set = set()
+for cards in category_arrays.values():
+    matched_set.update(cards)
+matched_count = len(matched_set)
+print(f"Total matched cards: {matched_count}")
+
+not_matched = len(original_list) - matched_count
+unmatched_cards = [card for card in original_list if card not in matched_set]
+print(f"Total not matched cards: {not_matched}")
+print(f"Unmatched cards: {unmatched_cards}")
