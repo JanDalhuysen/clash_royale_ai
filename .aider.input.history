@@ -19,3 +19,39 @@
 
 # 2025-06-07 14:18:19.700560
 +N
+
+# 2025-06-07 14:37:05.897630
++/add by_elixir.py
+
+# 2025-06-07 14:37:16.704996
++/add by_category.py
+
+# 2025-06-07 14:39:05.728534
++Please update the Python program by_category.py to work almost like by_elixir.py to parse the HTML by all categories. Create a new Python file or files if needed.
+
+# 2025-06-07 14:48:15.872432
++Y
+
+# 2025-06-07 15:05:31.834691
++/tokens
+
+# 2025-06-07 15:07:29.889484
++N
+
+# 2025-06-07 15:10:59.450413
++Thank you very much! Please quickly update the README.md to add information about the new by_category.py script and also add 2 or 3 new TODOs that might help with the next stages of the project like what extra data to collect and then how to train a model to play, also ideas about how to distinguish between your own troops and opponent troops.
+
+# 2025-06-07 15:11:08.973235
++Y
+
+# 2025-06-07 15:11:15.273793
++N
+
+# 2025-06-07 15:19:39.498170
++Y
+
+# 2025-06-07 15:19:48.378125
++N
+
+# 2025-06-07 15:21:19.182072
++/tokens
