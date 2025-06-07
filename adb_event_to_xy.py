@@ -2,6 +2,8 @@ import sys
 import cv2
 import numpy as np
 
+# adb shell getevent | python adb_event_to_xy.py
+
 # This program reads touch event data from stdin,
 # extracts (x, y) coordinates,and displays them
 #  as red dots on a white image using OpenCV.
@@ -39,5 +41,3 @@ for line in sys.stdin:
             gotY = True
 
 cv2.destroyAllWindows()
-
-# adb shell getevent | python adb_event_to_xy.py
