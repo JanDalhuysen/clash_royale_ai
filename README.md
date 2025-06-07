@@ -64,3 +64,9 @@ For live prediction:
 ```bash
 python predict_video.py
 ```
+
+## Todo
+
+- [ ] Maybe seperate model for cards and troops
+
+![Results](results.png)
