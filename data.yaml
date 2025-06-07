@@ -1,0 +1,25 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 16
+
+names:
+  [
+    "BabyDragonCard",
+    "GoblinBarrelCard",
+    "MinerCard",
+    "MusketeerCard",
+    "RamRiderCard",
+    "SkeletonArmyCard",
+    "SpearGoblinsCard",
+    "WitchCard",
+    "BabyDragon",
+    "GoblinBarrel",
+    "Miner",
+    "Musketeer",
+    "RamRider",
+    "SkeletonArmy",
+    "SpearGoblins",
+    "Witch",
+  ]
