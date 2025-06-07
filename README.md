@@ -7,7 +7,7 @@ This project contains scripts for automating and analyzing Clash Royale gameplay
 1. **get_data.py**  
    Captures game screenshots at regular intervals
 
-2. **adb_event_to_xy.py**  
+2. **get_data_on_touch.py**  
    Intercepts ADB touch events to convert screen coordinates to images and save touch points
 
 3. **labler.py**  
@@ -24,16 +24,19 @@ This project contains scripts for automating and analyzing Clash Royale gameplay
 1. **by_elixir.py**  
    Parses HTML to extract Clash Royale cards grouped by elixir cost
 
-2. **old_labler.py**  
+2. **adb_event_to_xy.py**  
+   Converts ADB touch events to x y and displays them as red dots on a white image using OpenCV.
+
+3. **old_labler.py**  
    Legacy version of the image labeling tool
 
-3. **predict.py**  
+4. **predict.py**  
    Runs YOLO inference on static images and displays results
 
-4. **main.py**  
+5. **main.py**  
    Contains various experimental utilities including OCR and button detection
 
-5. **card_counter.py**  
+6. **card_counter.py**  
    Tracks card usage by matching on-screen cards using template matching
 
 ## Usage
