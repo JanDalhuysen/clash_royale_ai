@@ -24,19 +24,22 @@ This project contains scripts for automating and analyzing Clash Royale gameplay
 1. **by_elixir.py**  
    Scrapes Clash Royale card data from HTML widgets and groups cards by elixir cost
 
-2. **adb_event_to_xy.py**  
+2. **by_category.py**  
+   Scrapes Clash Royale card data from HTML widgets and groups cards by category (e.g., air, building, etc.)
+
+3. **adb_event_to_xy.py**  
    Converts binary ADB touch events to (x,y) coordinates and overlays them on a display image
 
-3. **old_labler.py**  
+4. **old_labler.py**  
    Original labeling tool without elixir-based class grouping (unused in current workflow)
 
-4. **predict.py**  
+5. **predict.py**  
    Runs YOLO inference on static image files and displays detection results
 
-5. **main.py**  
+6. **main.py**  
    Experiments for OCR, template matching and UI detection (core logic moved to card_counter.py)
 
-6. **card_counter.py**  
+7. **card_counter.py**  
    Tracks active cards using template matching with adjustable confidence thresholds
 
 ## Usage
@@ -91,5 +94,8 @@ The recommended workflow for building and using the detection system:
 
 - [ ] Separate model for cards and troops (improve detection accuracy)
 - [ ] Add ADB integration for automated gameplay
+- [ ] Collect card deployment positions (location + timing) and game outcome data
+- [ ] Train reinforcement learning model for card placement recommendations
+- [ ] Implement opponent troop detection using side-of-arena position analysis
 
 ![Results](results.png)
