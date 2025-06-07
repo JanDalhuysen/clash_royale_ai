@@ -41,8 +41,12 @@ FONT = cv2.FONT_HERSHEY_SIMPLEX
 FONT_SCALE = 0.7
 LINE_THICKNESS = 2
 
+# Folder for touch events
+TOUCH_EVENTS_FOLDER = 'touch_events'   # Folder containing the touch event files
+
 # --- Global Variables ---
 image_files = []
+current_touch_points = []   # List of (x, y) for the current image
 current_image_index = 0
 current_image = None
 display_image = None # Image to draw on (a copy)
@@ -141,6 +145,26 @@ def load_image_and_labels(index):
     display_image = current_image.copy()
     current_bboxes = [] # Reset bboxes for the new image
 
+    # Reset touch points for this image
+    current_touch_points.clear()
+
+    # Load touch events if any
+    base_name = os.path.splitext(os.path.basename(img_path))[0]
+    touch_filepath = os.path.join(TOUCH_EVENTS_FOLDER, base_name + '.txt')
+    if os.path.exists(touch_filepath):
+        with open(touch_filepath, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    parts = line.split(',')
+                    if len(parts) >= 2:
+                        try:
+                            x = int(parts[0])
+                            y = int(parts[1])
+                            current_touch_points.append((x, y))
+                        except ValueError:
+                            print(f"Invalid number in touch event file: {line}")
+
     # Load existing labels for this image if they exist
     img_filename = os.path.basename(img_path)
     label_filename = os.path.splitext(img_filename)[0] + '.txt'
@@ -228,11 +252,15 @@ def redraw_image():
     if drawing and len(ref_point) == 2:
         cv2.rectangle(display_image, ref_point[0], ref_point[1], BOX_COLOR, LINE_THICKNESS)
 
+    # Draw current touch points as red circles
+    for pt in current_touch_points:
+        cv2.circle(display_image, pt, 5, (0, 0, 255), -1)
+
     # Display current class and image info
     set_label = 'C' if current_label_set == 'card' else 'T'
     info_text_class = f"[{set_label}] Elixir {current_elixir_group+1} ({current_class_index+1}/{len(get_active_classes()[current_elixir_group])}): {get_current_class_name()}"
     info_text_image = f"Image: {os.path.basename(image_files[current_image_index])} ({current_image_index + 1}/{len(image_files)})"
-    info_text_controls = "C/T:Card/Troop | 1-9:Elixir | N/P:Class | S:Save | D:Del | Space:Next | Q:Quit"
+    info_text_controls = "C/T:Card/Troop | 1-9:Elixir | N/P:Class | S:Save | D:Del | Space:Next | Q:Quit | A:Auto"
 
     cv2.putText(display_image, info_text_class, (10, 30), FONT, FONT_SCALE, (255,255,255), LINE_THICKNESS+1, cv2.LINE_AA)
     cv2.putText(display_image, info_text_class, (10, 30), FONT, FONT_SCALE, TEXT_COLOR, LINE_THICKNESS, cv2.LINE_AA)
@@ -358,6 +386,30 @@ def main():
         elif key == ord('d'): # Delete last bounding box
             if current_bboxes:
                 current_bboxes.pop()
+        elif key == ord('a'): # Auto-add boxes for touch points
+            if current_touch_points:
+                # BOX_SIZE = 25  # half box size to get 50x50 box
+                BOX_SIZE = 40
+
+                # Get current image size
+                img_h, img_w = current_image.shape[:2]
+                phone_w, phone_h = 1080, 2400
+                scale_x = img_w / phone_w
+                scale_y = img_h / phone_h
+
+                for pt in current_touch_points:
+                    x_phone, y_phone = pt
+                    if y_phone > 2000:
+                        # Double box size
+                        BOX_SIZE = 50
+                    # Map phone coordinates to screenshot coordinates
+                    x = int(x_phone * scale_x)
+                    y = int(y_phone * scale_y)
+                    bbox = [x - BOX_SIZE, y - BOX_SIZE, x + BOX_SIZE, y + BOX_SIZE]
+                    current_bboxes.append({'class_id': get_current_class_id(), 'bbox': bbox})
+                print(f"Added {len(current_touch_points)} boxes at touch points.")
+            else:
+                print("No touch points for this image.")
         elif key == ord(' ') or key == 13: # Space or Enter for Next image
             save_labels() # Save current before moving to next
             current_image_index = (current_image_index + 1)
