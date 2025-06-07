@@ -97,5 +97,8 @@ The recommended workflow for building and using the detection system:
 - [ ] Collect card deployment positions (location + timing) and game outcome data
 - [ ] Train reinforcement learning model for card placement recommendations
 - [ ] Implement opponent troop detection using side-of-arena position analysis
+- [ ] Collect game state data (elixir counts, tower health) to inform decision-making.
+- [ ] Train a model to predict optimal card placements based on game state and opponent actions.
+- [ ] Explore methods to differentiate between own troops and opponent troops (e.g., color analysis, position relative to towers).
 
 ![Results](results.png)
