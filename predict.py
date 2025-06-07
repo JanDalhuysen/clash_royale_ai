@@ -5,7 +5,6 @@ from ultralytics import YOLO
 
 model = YOLO('best.pt')
 
-
 def show_preds_image(image_path):
     print(model.info())
     image = cv2.imread(image_path)
