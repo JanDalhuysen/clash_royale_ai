@@ -14,13 +14,5 @@ if __name__ == '__main__':
     # Fine-tune the model
     results = model.train(
         data='data.yaml',
-        epochs=100
+        epochs=20
     )
-
-    # Install the ultralytics package using conda
-    # conda install -c conda-forge ultralytics
-
-    # C:\Users\dalhu\AppData\Roaming\Ultralytics
-
-    # https://prod.liveshare.vsengsaas.visualstudio.com/join?86DDE4FD23CB767DF5317A3D80BC7F7F170D
-    # is in '/home/27976882/.config/Ultralytics/settings.yaml'
