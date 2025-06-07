@@ -1,5 +1,4 @@
 import pyautogui
-import cv2
 import numpy as np
 import time
 import os
@@ -13,7 +12,6 @@ def save_screenshot(i):
     my_screenshot_image = my_screenshot_image.crop((250, 26, 250+456, 1010))
     my_screenshot_image.save(os.path.join("data", f"{i}.png"))
     print(f"Screenshot {i} saved.")
-    time.sleep(0.5)  # Add a small delay to avoid overwhelming the system
 
 # Create data folder if it doesn't exist
 if not os.path.exists("data"):
@@ -29,5 +27,5 @@ else:
 # Take screenshot every 5 seconds, continuing numbering
 for i in range(max_index + 1, max_index + 1 + 100):
     save_screenshot(i)
-    # Wait for 5 seconds before taking the next screenshot
-    time.sleep(5)
+    # Wait for 4 seconds before taking the next screenshot
+    time.sleep(4)
