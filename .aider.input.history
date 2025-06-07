@@ -1,0 +1,21 @@
+
+# 2025-06-07 14:08:04.365555
++Y
+
+# 2025-06-07 14:09:43.992866
++Please update the README.md by giving a bit more information about each file and also adding a small workflow section at the end explaining what the steps are and when to use what program
+
+# 2025-06-07 14:09:52.048821
++Y
+
+# 2025-06-07 14:17:46.829300
++!ls
+
+# 2025-06-07 14:17:58.900799
++Y
+
+# 2025-06-07 14:18:09.873567
++!git status
+
+# 2025-06-07 14:18:19.700560
++N
