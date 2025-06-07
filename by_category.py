@@ -1,6 +1,6 @@
 import re
 import numpy as np
-from difflib import get_close_matches
+from clash_utils import find_closest_match
 
 # Original list of card names
 original_list = [

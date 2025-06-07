@@ -1,6 +1,6 @@
 import re
 import numpy as np
-from difflib import get_close_matches
+from clash_utils import find_closest_match
 
 # Original list of card names
 original_list = [
@@ -354,10 +354,6 @@ def extract_cards_and_costs(html):
 # Extract card names and their elixir costs from HTML
 card_costs = extract_cards_and_costs(html_content)
 
-# Function to find the closest match for a card name from the original list
-def find_closest_match(card_name, original_list):
-    closest_match = get_close_matches(card_name, original_list, n=1)
-    return closest_match[0] if closest_match else None
 
 # Initialize arrays for each elixir cost
 elixir_cost_arrays = {i: [] for i in range(1, 10)}
