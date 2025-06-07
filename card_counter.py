@@ -13,18 +13,6 @@ import itertools
 #    Replace the example paths with your actual paths.
 #    The keys (e.g., "Archers") are for your reference and output.
 DECK_CARD_TEMPLATES = {
-    "Archers": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\ArchersCard.png.resized.png",
-    "Arrows": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\ArrowsCard.png.resized.png",
-    "Barbarians": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\BarbariansCard.png.resized.png",
-    "Bomber": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\BomberCard.png.resized.png",
-    "Cannon": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\CannonCard.png.resized.png",
-    "Goblins": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\GoblinsCard.png.resized.png",
-    "Knight": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\KnightCard.png.resized.png",
-    "Minions": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\MinionsCard.png.resized.png",
-    # Add all 8 of your chosen deck cards. Ensure paths are correct!
-}
-
-DECK_CARD_TEMPLATES = {
     "Witch": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\WitchCard.png.resized.png",
     "Wizard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\WizardCard.png.resized.png",
     "Graveyard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\GraveyardCard.png.resized.png",
@@ -36,17 +24,17 @@ DECK_CARD_TEMPLATES = {
     # Add all 8 of your chosen deck cards. Ensure paths are correct!
 }
 
-DECK_CARD_TEMPLATES = {
-"BabyDragonCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\BabyDragonCard.png.resized.png",
-"GoblinBarrelCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\GoblinBarrelCard.png.resized.png",
-"MinerCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\MinerCard.png.resized.png",
-"MusketeerCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\MusketeerCard.png.resized.png",
-"RamRiderCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\RamRiderCard.png.resized.png",
-"SkeletonArmyCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\SkeletonArmyCard.png.resized.png",
-"SpearGoblinsCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\SpearGoblinsCard.png.resized.png",
-"WitchCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\WitchCard.png.resized.png",
-# "None": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\none.png",
-}
+# DECK_CARD_TEMPLATES = {
+# "BabyDragonCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\BabyDragonCard.png.resized.png",
+# "GoblinBarrelCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\GoblinBarrelCard.png.resized.png",
+# "MinerCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\MinerCard.png.resized.png",
+# "MusketeerCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\MusketeerCard.png.resized.png",
+# "RamRiderCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\RamRiderCard.png.resized.png",
+# "SkeletonArmyCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\SkeletonArmyCard.png.resized.png",
+# "SpearGoblinsCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\SpearGoblinsCard.png.resized.png",
+# "WitchCard": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\WitchCard.png.resized.png",
+# # "None": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\none.png",
+# }
 
 # DECK_CARD_TEMPLATES = {
 # "WitchCard.png.resized": r"C:\gitsync\jan_projects\clash_royale_ai\all_cards_small_cropped2\WitchCard.png.resized.png",
@@ -69,12 +57,12 @@ DECK_CARD_TEMPLATES = {
 #        - 'width' and 'height' MUST BE VERY CLOSE to the dimensions of your template images.
 #    You'll need to measure these on your screen.
 #    A utility function `get_rois_for_slots_utility()` is provided below to help you find these.
-# CARD_SLOT_ROIS = [
-#     (330, 880, 75, 90),  # Placeholder for Slot 1 (x, y, w, h) - UPDATE THESE
-#     (415, 880, 75, 90),  # Placeholder for Slot 2 (x, y, w, h) - UPDATE THESE
-#     (500, 880, 75, 90),  # Placeholder for Slot 3 (x, y, w, h) - UPDATE THESE
-#     (585, 880, 75, 90),  # Placeholder for Slot 4 (x, y, w, h) - UPDATE THESE
-# ]
+CARD_SLOT_ROIS = [
+    (362, 907, 66, 62),  # Slot 1
+    (442, 910, 74, 58),  # Slot 2
+    (529, 911, 70, 58),  # Slot 3
+    (611, 907, 75, 62),  # Slot 4
+]
 
 # CARD_SLOT_ROIS = [
 #     (607, 885, 85, 114),  # Slot 1
@@ -90,28 +78,21 @@ DECK_CARD_TEMPLATES = {
 #     (598, 885, 96, 120),  # Slot 1
 # ]
 
+# Normal
 # CARD_SLOT_ROIS = [
-#     (329, 874, 127, 135),  # Slot 1
-#     (425, 874, 112, 137),  # Slot 2
-#     (506, 875, 116, 133),  # Slot 3
-#     (591, 877, 110, 132),  # Slot 4
+#     (362, 907, 66, 62),  # Slot 1
+#     (442, 910, 74, 58),  # Slot 2
+#     (529, 911, 70, 58),  # Slot 3
+#     (611, 907, 75, 62),  # Slot 4
 # ]
 
-# Normal
-CARD_SLOT_ROIS = [
-    (362, 907, 66, 62),  # Slot 1
-    (442, 910, 74, 58),  # Slot 2
-    (529, 911, 70, 58),  # Slot 3
-    (611, 907, 75, 62),  # Slot 4
-]
-
 #Spectate
-CARD_SLOT_ROIS = [
-    (314, 925, 56, 71),  # Slot 1
-    (372, 927, 58, 71),  # Slot 2
-    (432, 927, 59, 70),  # Slot 3
-    (490, 927, 59, 70),  # Slot 4
-]
+# CARD_SLOT_ROIS = [
+#     (314, 925, 56, 71),  # Slot 1
+#     (372, 927, 58, 71),  # Slot 2
+#     (432, 927, 59, 70),  # Slot 3
+#     (490, 927, 59, 70),  # Slot 4
+# ]
 
 
 # 3. MATCHING CONFIDENCE
@@ -139,12 +120,12 @@ for card_name, card_path in DECK_CARD_TEMPLATES.items():
         print(f"  ✓ Loaded template for {card_name} (Dimensions: {img.shape[1]}w x {img.shape[0]}h)")
 
 if not loaded_templates:
-    print("\nCRITICAL ERROR: No templates were successfully loaded. Exiting.")
+    print("CRITICAL ERROR: No templates were successfully loaded. Exiting.")
     print("Please check the paths in DECK_CARD_TEMPLATES and ensure card images exist.")
     exit()
 
 if len(loaded_templates) != 8:
-    print(f"\nWARNING: Expected 8 deck templates, but only {len(loaded_templates)} were loaded.")
+    print(f"WARNING: Expected 8 deck templates, but only {len(loaded_templates)} were loaded.")
     print("The tracker will only work with the loaded cards.")
 
 
@@ -209,7 +190,6 @@ def identify_card_in_slot(slot_screenshot_cv, templates_dict):
     matches.sort(key=lambda x: x[1], reverse=True)
     # Return the two best matches above threshold (if any)
     best_matches = [(name, conf) for name, conf in matches if conf >= MATCH_CONFIDENCE][:2]
-    # print(f"Best matches: {best_matches}")
     # Pad with None if less than 2 found
     while len(best_matches) < 2:
         best_matches.append((None, -1.0))
@@ -289,7 +269,7 @@ def recognize_deck_cards_from_region(num_cards=8):
 def get_rois_for_slots_utility(num_slots=4):
     """
     A utility to help you select the ROIs for your card slots.
-    Run this function once, copy the output, and paste it into CARD_SLOT_ROIS.
+    Run this function once, copy the output, and paste it into the CARD_SLOT_ROIS variable.
     """
     print("\n--- ROI Selection Utility ---")
     print("1. Make sure your Clash Royale game window is open and visible, showing the card hand.")
@@ -485,7 +465,7 @@ def run_card_tracker():
                 # Display updated counts
                 # print("Current Usage Counts:")
                 # for name, count in sorted(card_usage_counts.items()):
-                    # if count > 0: print(f"  {name}: {count}")
+                #     if count > 0: print(f"  {name}: {count}")
                 # print("--------------------")
 
             # 3. Update previous_hand_state for the next iteration
@@ -507,11 +487,11 @@ def run_card_tracker():
 if __name__ == "__main__":
     # Run this utility to define your CARD_SLOT_ROIS
     # After running, copy the printed list into the CARD_SLOT_ROIS variable above.
-    get_rois_for_slots_utility()
+    # get_rois_for_slots_utility()
 
     # Run this utility to recognize deck cards from a selected region
     # After running, copy the printed list into the DECK_CARD_TEMPLATES variable above.
     # recognize_deck_cards_from_region()
 
     # Run the main card tracker
-    # run_card_tracker()
+    run_card_tracker()
