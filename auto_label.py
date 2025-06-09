@@ -2,7 +2,7 @@ import os
 import cv2
 from pathlib import Path
 
-def create_yolo_label(img, template_path, class_id, output_path, confidence_threshold=0.7, scale_steps=10):
+def create_yolo_label(img, template_path, class_id, output_path, confidence_threshold=0.2, scale_steps=10):
     """Create YOLO label file using multi-scale template matching."""
     template = cv2.imread(template_path)
     if template is None:
@@ -15,11 +15,9 @@ def create_yolo_label(img, template_path, class_id, output_path, confidence_thre
     # Try different scales
     best_match = None
     best_max_val = -1
-    
-    for scale in range(1, scale_steps + 1):
+    for scale in range(scale_steps + 1):
         # Calculate current scale factor
-        scale_factor = 1 - (scale * 0.05)  # Try scales from 100% down to 50% (0.05 * 10 = 0.5)
-        
+        scale_factor = 1.5 - (scale * (1.0 / scale_steps))  # Try scales from 150% down to 50%
         # Resize template
         resized_template = cv2.resize(template, None, fx=scale_factor, fy=scale_factor)
         th, tw = resized_template.shape[:2]
