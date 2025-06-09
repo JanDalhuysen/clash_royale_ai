@@ -13,10 +13,13 @@ This project contains scripts for automating and analyzing Clash Royale gameplay
 3. **labler.py**  
    Image labeling tool for creating YOLO training data with card+troop classes grouped by elixir cost for faster labeling. This script provides a GUI for annotating images with bounding boxes and class labels. It saves the labels in YOLO format to the `labels` folder, making it easier to train a detection model.
 
-4. **train.py**  
+4. **auto_label.py**  
+   Automated label generator using multi-scale template matching to create YOLO format labels for card images. This script automatically detects cards in images using template matching at various scales, and generates corresponding YOLO label files. It's useful for quickly creating large amounts of training data with minimal manual effort.
+
+5. **train.py**  
    Trains custom YOLOv8 model using collected training data with grouped class weights. This script uses the YOLOv8 framework to train a model on your labeled dataset. It requires a `data.yaml` file to configure the dataset paths and class names, and outputs training metrics and model weights to the `runs/detect` directory.
 
-5. **predict_video.py**  
+6. **predict_video.py**  
    Real-time screen detector that uses trained YOLO model to identify cards and troops during gameplay. This script uses the trained YOLO model to detect cards and troops in real-time from a screen capture. It displays the results with bounding boxes and class labels, providing a live view of the game state.
 
 ## Legacy/Utility Scripts
