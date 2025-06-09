@@ -30,16 +30,22 @@ This project contains scripts for automating and analyzing Clash Royale gameplay
 3. **adb_event_to_xy.py**  
    Converts binary ADB touch events to (x,y) coordinates and overlays them on a display image. This script takes ADB touch event data and converts it into screen coordinates. It's useful for visualizing touch inputs on the screen, helping to understand user interactions.
 
-4. **old_labler.py**  
+4. **bulk_crop_cards.py**  
+   Batch cropping utility that crops images to keep only the middle third of card images. This script can be used to standardize card image dimensions by cropping them to focus on the central portion of the image.
+
+5. **ocr_test.py**  
+   Interactive test for OCR functionality that lets you select a region of an image to analyze. This script provides a way to test OCR capabilities by allowing users to draw a rectangle on an image to select a specific area for text recognition.
+
+6. **old_labler.py**  
    Original labeling tool without elixir-based class grouping (unused in current workflow). This is a legacy labeling tool that doesn't group classes by elixir cost. It's kept for historical purposes but is not used in the current workflow, as `labler.py` provides more advanced features.
 
-5. **predict.py**  
+7. **predict.py**  
    Runs YOLO inference on static image files and displays detection results. This script runs the YOLO model on a single image and displays the detected objects. It's useful for testing the model on individual images and verifying its performance.
 
-6. **main.py**  
+8. **main.py**  
    Experiments for OCR, template matching and UI detection (core logic moved to card_counter.py). This script contains various experiments with OCR, template matching, and UI detection. The core logic has been moved to `card_counter.py` for better organization and maintainability.
 
-7. **card_counter.py**  
+9. **card_counter.py**  
    Tracks active cards using template matching with adjustable confidence thresholds. This script uses template matching to identify cards on the screen. It's useful for tracking the cards played by both the player and the opponent, providing insights into game strategy.
 
 ## Usage
