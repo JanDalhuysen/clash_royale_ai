@@ -1,7 +1,7 @@
 import cv2
 import os
 
-def create_yolo_label(image_path, template_path, class_id, output_dir, confidence_threshold=0.7, scale_steps=10):
+def create_yolo_label(image_path, template_path, class_id, output_dir, confidence_threshold=0.2, scale_steps=10):
     # Load image and template
     img = cv2.imread(image_path)
     template = cv2.imread(template_path)

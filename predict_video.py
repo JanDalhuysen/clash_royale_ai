@@ -14,7 +14,7 @@ def show_preds_live_screen(region={'top': 26, 'left': 250, 'width': 706, 'height
             frame = np.array(sct_img)
             frame = cv2.cvtColor(frame, cv2.COLOR_BGRA2BGR)
 
-            outputs = model.predict(source=frame, conf=0.01, verbose=False)
+            outputs = model.predict(source=frame, conf=0.07, verbose=False)
             boxes = outputs[0].boxes.xyxy.cpu().numpy() if outputs[0].boxes.xyxy.numel() > 0 else []
             scores = outputs[0].boxes.conf.cpu().numpy() if outputs[0].boxes.conf.numel() > 0 else []
             classes = outputs[0].boxes.cls.cpu().numpy() if outputs[0].boxes.cls.numel() > 0 else []

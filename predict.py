@@ -6,25 +6,33 @@ from ultralytics import YOLO
 model = YOLO('best.pt')
 
 def show_preds_image(image_path):
-    print(model.info())
+    # print(model.info())
     image = cv2.imread(image_path)
-    print("Loaded image shape:", image.shape)
+    # print("Loaded image shape:", image.shape)
 
     outputs = model.predict(source=image_path, conf=0.05)
-    print(outputs)
+    # print(outputs)
 
-    print("***")
-    print(outputs[0].names)
-    print("***")
+    # print("***")
+    # print(outputs[0].names)
+    # print("***")
 
     # Get boxes as numpy array
     boxes = outputs[0].boxes.xyxy.cpu().numpy()
+    confidences = outputs[0].boxes.conf.cpu().numpy()
+    class_indices = outputs[0].boxes.cls.cpu().numpy()
+    class_names = outputs[0].names
+
     print("boxes:", boxes)
 
     if boxes.shape[0] == 0:
         print("No detections found.")
     else:
-        for det in boxes:
+        for i, det in enumerate(boxes):
+            class_idx = int(class_indices[i])
+            confidence = float(confidences[i])
+            name = class_names[class_idx]
+            print(f"Box {i}: Class='{name}', Confidence={confidence:.4f}")
             cv2.rectangle(
                 image,
                 (int(det[0]), int(det[1])),

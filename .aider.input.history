@@ -91,3 +91,54 @@
 
 # 2025-06-07 16:07:36.122100
 +/tokens
+
+# 2025-06-09 10:15:40.780664
++N
+
+# 2025-06-09 10:19:06.397961
++!ls templates
+
+# 2025-06-09 10:19:09.497515
++Y
+
+# 2025-06-09 10:19:19.149997
++!ls images_to_label
+
+# 2025-06-09 10:19:21.788480
++Y
+
+# 2025-06-09 10:19:51.810122
++/add auto_rectangle.py
+
+# 2025-06-09 10:19:59.257179
++/add auto_label.py
+
+# 2025-06-09 10:34:14.208105
++!cat auto_label.py
+
+# 2025-06-09 10:34:17.216604
++Y
+
+# 2025-06-09 10:39:28.380281
++Hello, I would like to make a program to help me automatically label images for training a Ultralytics YoloV8 model using OpenCV template matching. I want to train the yolov8 model to recognise Clash  Royale cards. I have a screenshot with a bunch of cards on it and then I have images of each of the cards on its own. I would like to label the screenshot with the many cards on it. Please look at auto_rectangle.py and auto_label.py and then implement these features.
+
+# 2025-06-09 10:43:58.584988
++Thank you very much! However the template cards are not exactly the same size as the cards in the screenshot, so when I ran the program nothing got detected. Please update the logic to try to match the templates at various different sizes.
+
+# 2025-06-09 10:55:49.963804
++/add class_ids.txt
+
+# 2025-06-09 10:57:46.952877
++Thank you so much! Please update the auto_label.py program to use the class IDs in the correct order as specified in the class_ids.txt file.
+
+# 2025-06-09 11:02:43.160066
++Y
+
+# 2025-06-09 14:24:26.199237
++!ls images_to_label
+
+# 2025-06-09 14:24:30.087573
++N
+
+# 2025-06-09 14:24:32.659093
++/tokens

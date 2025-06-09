@@ -28,4 +28,4 @@ else:
 for i in range(max_index + 1, max_index + 1 + 100):
     save_screenshot(i)
     # Wait for 4 seconds before taking the next screenshot
-    time.sleep(4)
+    time.sleep(10)

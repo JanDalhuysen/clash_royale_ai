@@ -10,7 +10,7 @@ import base64
 import json
 import time
 
-from translate import Translator
+# from translate import Translator
 
 import difflib
 
@@ -21,7 +21,7 @@ im1.save(r"in.png")
 im1.save(r"original.png")
 
 # crop all images to only keep the middle third in images folder
-images_folder = "all_cards_small_cropped2"
+images_folder = "testing2"
 if os.path.exists(images_folder):
     for image_to_find in os.listdir(images_folder):
         image_path = os.path.join(images_folder, image_to_find)
@@ -33,15 +33,18 @@ if os.path.exists(images_folder):
             height, width = img.shape[:2]
 
             # Calculate the coordinates for cropping
-            # start_x = 0
-            # end_x = width
-            # start_y = int(height / 4)
-            # end_y = int(height * 3 / 4)
 
-            start_x = int(width / 7)
-            end_x = int(width * 6 / 7)
-            start_y = 0
-            end_y = height
+            # For cropping top and bottom
+            start_x = 0
+            end_x = width
+            start_y = int(height / 8)
+            end_y = int(height * 7 / 8)
+
+            # For cropping left and right
+            # start_x = int(width / 9)
+            # end_x = int(width * 8 / 9)
+            # start_y = 0
+            # end_y = height
 
             # Crop the image
             cropped_img = img[start_y:end_y, start_x:end_x]

@@ -336,7 +336,7 @@ def print_class_ids():
 
 def main():
     global image_files, current_image_index, current_bboxes, current_elixir_group, current_class_index, current_label_set
-    print_class_ids()
+    # print_class_ids()
 
     # Create output directory if it doesn't exist
     if not os.path.exists(IMAGE_FOLDER):
