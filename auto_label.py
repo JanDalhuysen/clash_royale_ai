@@ -70,9 +70,10 @@ if __name__ == "__main__":
     # Try different scales
     best_match = None
     best_max_val = -1
-    for scale in range(scale_steps + 1):
+    for scale in range(1, scale_steps + 1):
         # Calculate current scale factor
         scale_factor = 1.5 - (scale * (1.0 / scale_steps))  # Try scales from 150% down to 50%
+        
         # Resize template
         resized_template = cv2.resize(template, None, fx=scale_factor, fy=scale_factor)
         th, tw = resized_template.shape[:2]
