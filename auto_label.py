@@ -2,22 +2,45 @@ import os
 import cv2
 from pathlib import Path
 
-def create_yolo_label(img, template_path, class_id, output_path, confidence_threshold=0.8):
-    """Create YOLO label file using template matching."""
+def create_yolo_label(img, template_path, class_id, output_path, confidence_threshold=0.7, scale_steps=10):
+    """Create YOLO label file using multi-scale template matching."""
     template = cv2.imread(template_path)
     if template is None:
         print(f"Error: Could not load template {template_path}")
         return []
     
+    # Get original template dimensions
     h, w = template.shape[:2]
     
-    # Template matching
-    result = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
-    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+    # Try different scales
+    best_match = None
+    best_max_val = -1
     
-    if max_val >= confidence_threshold:
-        top_left = max_loc
-        bottom_right = (top_left[0] + w, top_left[1] + h)
+    for scale in range(1, scale_steps + 1):
+        # Calculate current scale factor
+        scale_factor = 1 - (scale * 0.05)  # Try scales from 100% down to 50% (0.05 * 10 = 0.5)
+        
+        # Resize template
+        resized_template = cv2.resize(template, None, fx=scale_factor, fy=scale_factor)
+        th, tw = resized_template.shape[:2]
+        
+        # Skip if template is larger than image
+        if tw > img.shape[1] or th > img.shape[0]:
+            continue
+            
+        # Template matching
+        result = cv2.matchTemplate(img, resized_template, cv2.TM_CCOEFF_NORMED)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+        
+        # Keep track of best match across all scales
+        if max_val > best_max_val:
+            best_max_val = max_val
+            best_match = (max_loc, tw, th, scale_factor)
+    
+    # If we found a good match
+    if best_match and best_max_val >= confidence_threshold:
+        top_left, tw, th, scale_factor = best_match
+        bottom_right = (top_left[0] + tw, top_left[1] + th)
         
         # Get bounding box coordinates
         x, y = top_left
@@ -32,6 +55,7 @@ def create_yolo_label(img, template_path, class_id, output_path, confidence_thre
         norm_height = height / img_h
         
         return [(class_id, x_center, y_center, norm_width, norm_height)]
+    
     return []
 
 def main():
