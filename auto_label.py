@@ -2,7 +2,62 @@ import os
 import cv2
 from pathlib import Path
 
-def create_yolo_label(img, template_path, class_id, output_path, confidence_threshold=0.2, scale_steps=10):
+# Load class IDs from class_ids.txt
+def load_class_ids():
+    """Load class IDs from class_ids.txt file."""
+    class_ids = []
+    with open('class_ids.txt', 'r') as f:
+        for line in f:
+            if line.startswith('card_e_'):
+                # Extract the class name from the template filename
+                class_name = line.split("'")[1]
+                class_ids.append(class_name)
+    return class_ids
+
+def main():
+    """Main function to process images and generate labels."""
+    images_dir = "images_to_label"
+    templates_dir = "templates"
+    output_dir = "labels"
+    
+    # Create output directory if it doesn't exist
+    Path(output_dir).mkdir(exist_ok=True)
+    
+    # Get list of all template files in the correct order
+    class_ids = load_class_ids()
+    
+    # Process each image
+    for image_file in os.listdir(images_dir):
+        if not image_file.endswith(('.png', '.jpg', '.jpeg')):
+            continue
+            
+        image_path = os.path.join(images_dir, image_file)
+        img = cv2.imread(image_path)
+        
+        if img is None:
+            print(f"Error: Could not load image {image_path}")
+            continue
+            
+        all_boxes = []
+        
+        # Match against all templates in the specified order
+        for class_id, class_name in enumerate(class_ids):
+            template_path = os.path.join(templates_dir, class_name + ".png")
+            boxes = create_yolo_label(img, template_path, class_id, output_dir)
+            all_boxes.extend(boxes)
+        
+        # Write all boxes to label file
+        base_name = os.path.splitext(image_file)[0]
+        label_path = os.path.join(output_dir, base_name + ".txt")
+        
+        with open(label_path, "w") as f:
+            for box in all_boxes:
+                f.write(" ".join(map(str, box)) + "\n")
+                
+        print(f"Processed {image_file}, found {len(all_boxes)} cards")
+
+if __name__ == "__main__":
+    main()
     """Create YOLO label file using multi-scale template matching."""
     template = cv2.imread(template_path)
     if template is None:
