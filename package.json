@@ -1,0 +1,30 @@
+{
+  "type": "module",
+  "name": "clash_royale_ai",
+  "version": "1.0.0",
+  "description": "This project contains scripts for automating and analyzing Clash Royale gameplay through computer vision and machine learning:",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JanDalhuysen/clash_royale_ai.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JanDalhuysen/clash_royale_ai/issues"
+  },
+  "homepage": "https://github.com/JanDalhuysen/clash_royale_ai#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "axios": "^1.9.0",
+    "zod": "^3.25.63"
+  }
+}

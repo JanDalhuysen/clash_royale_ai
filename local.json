@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "clash_royale_ai": {
+      "command": "node",
+      "args": ["C:\\Apps\\git\\clash_royale_ai\\mcp_server.js"]
+    }
+  }
+}
