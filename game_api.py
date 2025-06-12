@@ -2,29 +2,26 @@
 from flask import Flask, jsonify, request
 import json
 
-# --- MOCKUP FUNCTIONS ---
-# Replace these with your actual YOLOv8 and game interaction logic.
+# --- YOLO DETECTION INTEGRATION ---
+# Store for current detections
+current_detections = {
+    "hand": [],
+    "my_troops": [],
+    "enemy_troops": []
+}
+
+# Simple in-memory storage for demonstration
+def update_yolo_detections(new_detections):
+    """Update the current detections with new data from YOLO model."""
+    global current_detections
+    current_detections = new_detections
+    print("Updated detections:", new_detections)
+    return True
+
 def get_yolo_detections():
-    # In reality, this function would:
-    # 1. Take a screenshot.
-    # 2. Run it through your YOLOv8 model.
-    # 3. Parse the results.
-    print("Python: Running YOLOv8 detection...")
-    mock_data = {
-        "hand": [
-            {"card_name": "Knight", "elixir": 3},
-            {"card_name": "Archers", "elixir": 3},
-            {"card_name": "Arrows", "elixir": 3},
-            {"card_name": "Giant", "elixir": 5}
-        ],
-        "my_troops": [
-            {"troop_name": "Knight", "x": 250, "y": 600, "hp_percent": 80}
-        ],
-        "enemy_troops": [
-            {"troop_name": "MiniPEKKA", "x": 260, "y": 400, "hp_percent": 100}
-        ]
-    }
-    return mock_data
+    """Get the current detections from YOLO model."""
+    print("Python: Returning current YOLOv8 detections...")
+    return current_detections
 
 def get_game_metrics():
     # In reality, this function would use OCR or other methods.
@@ -57,6 +54,18 @@ def get_game_state():
     # Combine all data into a single response
     full_state = {**yolo_data, **metrics_data}
     return jsonify(full_state)
+
+@app.route('/update_detections', methods=['POST'])
+def update_detections():
+    """Endpoint to update detection results from YOLO model."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"status": "error", "message": "No data provided"}), 400
+        
+    if update_yolo_detections(data):
+        return jsonify({"status": "success", "message": "Detections updated successfully"})
+    else:
+        return jsonify({"status": "error", "message": "Failed to update detections"}), 500
 
 @app.route('/place_card', methods=['POST'])
 def place_card():

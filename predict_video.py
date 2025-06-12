@@ -45,6 +45,23 @@ def show_preds_live_screen(region={'top': 26, 'left': 250, 'width': 706, 'height
                 )
 
             cv2.imshow("Live Screen Predictions", frame)
+            # Send detection results to Flask API
+            detection_data = {
+                "hand": [
+                    {"card_name": names[class_id], "elixir": int(scores[i] * 10) // 2 + 1}  # Mock elixir based on confidence
+                    for i, det in enumerate(boxes)
+                ],
+                "my_troops": [],
+                "enemy_troops": []
+            }
+            
+            try:
+                response = requests.post("http://localhost:5000/update_detections", json=detection_data)
+                if response.status_code != 200:
+                    print("Failed to update detections:", response.text)
+            except Exception as e:
+                print("Error sending detections to API:", e)
+                
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
@@ -55,3 +72,4 @@ if __name__ == "__main__":
 
 
 # conda install -c conda-forge python-mss
+import requests
