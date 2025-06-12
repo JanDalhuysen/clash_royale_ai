@@ -202,3 +202,24 @@
 
 # 2025-06-09 15:41:46.893518
 +Y
+
+# 2025-06-12 14:20:17.822816
++N
+
+# 2025-06-12 14:20:46.583583
++/add predict_video.py
+
+# 2025-06-12 14:20:57.119521
++/add mcp_server.js
+
+# 2025-06-12 14:21:01.571037
++/add game_api.py
+
+# 2025-06-12 14:28:10.442489
++Hello, I am trying the make a program that allows a LLMs to play Clash Royale. I would like to, if possible, use an AI model that I can run locally on my computer with Ollama. I would like to use a model withou vision, so that means that I will need to give the AI "eyes" on my own. My idea is to use Ultralytics YOLOv8 for detections cards in my current hand and troops on the board. Then I have a MCP server that the model can use as "eyes". The MCP will have tools that the model can use, like getting information about the state of the game, like what cards it currently has in its hands and what enemy troops are currently on the board. It can then use another tool to place a cards at specific xy coordinates. This continues until someone has won the game. So far I have just tested it with made up data, but now I need to connect the object detection to the game_api. Please look at the predict_video.py
+
+# 2025-06-12 14:30:43.643580
++Thank you very much! Please now look at predict_video.py and mcp_server.js and game_api.py, then implement sending real data from the yolo model with the game_api
+
+# 2025-06-12 14:31:51.356761
++/tokens

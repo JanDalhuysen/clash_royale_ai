@@ -63,12 +63,12 @@ server.tool("place_card_at_xy",
 
 
 // Add an addition tool
-server.tool("special_Pi_number_of_the_day",
-  { a: z.number(), b: z.number() },
-  async ({ a, b }) => ({
-    content: [{ type: "text", text: String(314) }]
-  })
-);
+// server.tool("special_Pi_number_of_the_day",
+//   { a: z.number(), b: z.number() },
+//   async ({ a, b }) => ({
+//     content: [{ type: "text", text: String(314) }]
+//   })
+// );
 
 // Start receiving messages on stdin and sending messages on stdout
 const transport = new StdioServerTransport();

@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 import mss
+import requests
 
 model = YOLO('best.pt')
 
