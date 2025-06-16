@@ -70,13 +70,11 @@ def generate_synthetic_data(num_images, class_map):
             # --- 3. Augment the sprite ---
             # Randomly resize
             # scale = random.uniform(0.5, 1.2) # Scale between 50% and 120%
-            # new_w = int(sprite_img.shape[1] * scale)
-            # new_h = int(sprite_img.shape[0] * scale)
-            # sprite_resized = cv2.resize(sprite_img, (new_w, new_h))
+            scale = 0.5
+            new_w = int(sprite_img.shape[1] * scale)
+            new_h = int(sprite_img.shape[0] * scale)
+            sprite_resized = cv2.resize(sprite_img, (new_w, new_h))
 
-            new_w = int(sprite_img.shape[1])
-            new_h = int(sprite_img.shape[0])
-            
             # (Optional: Add more augmentations like rotation, brightness, etc.)
 
             # 4. Choose a random placement location
@@ -86,12 +84,15 @@ def generate_synthetic_data(num_images, class_map):
             
             # x_pos = random.randint(0, max_x)
             # y_pos = random.randint(0, max_y)
-            x_pos = 250
-            y_pos = 500
+
+            # x y w h
+            # (133, 279, 195, 312)
+            x_pos = random.randint(133, 133 + 195)
+            y_pos = random.randint(279, 279 + 312)
 
             # 5. Overlay the sprite onto the background
-            # background = overlay_transparent(background, sprite_resized, x_pos, y_pos)
-            background = overlay_transparent(background, sprite_img, x_pos, y_pos)
+            background = overlay_transparent(background, sprite_resized, x_pos, y_pos)
+            # background = overlay_transparent(background, sprite_img, x_pos, y_pos)
 
             # 6. Calculate and store YOLO label
             class_id = sprite_info['class_id']
@@ -118,8 +119,7 @@ if __name__ == '__main__':
     # IMPORTANT: Create a mapping from your character folder names to the class IDs
     # These IDs must match the 'names' list in your YOLOv8 data.yaml file.
     CLASS_MAP = {
-        'chr_musketeer_tex': 0,
-        'chr_wizard_tex': 1,
+        'chr_baby_dragon_tex': 0,
         # 'goblin': 2,
         # ... and so on for all your characters
     }
