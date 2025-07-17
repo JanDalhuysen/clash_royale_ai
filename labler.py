@@ -4,9 +4,10 @@ import os
 import glob
 
 # --- Configuration ---
-IMAGE_FOLDER = 'images_to_label'  # Folder containing your game screenshots/images
-OUTPUT_LABEL_FOLDER = 'labels'    # Folder where YOLO .txt label files will be saved
-
+# IMAGE_FOLDER = 'images_to_label'  # Folder containing your game screenshots/images
+# OUTPUT_LABEL_FOLDER = 'labels'    # Folder where YOLO .txt label files will be saved
+IMAGE_FOLDER = 'ig_synthetic_output/images'
+OUTPUT_LABEL_FOLDER = 'ig_synthetic_output/labels'
 
 troop_e_1 = ['Skeletons', 'ElectroSpirit', 'FireSpirit', 'IceSpirit', 'HealSpirit']
 troop_e_2 = ['Goblins', 'SpearGoblins', 'Bomber', 'Bats', 'Zap', 'GiantSnowball', 'Berserker', 'IceGolem', 'SuspiciousBush', 'BarbarianBarrel', 'WallBreakers', 'GoblinCurse', 'Rage', 'TheLog']

@@ -14,5 +14,5 @@ if __name__ == '__main__':
     # Fine-tune the model
     results = model.train(
         data='data.yaml',
-        epochs=20
+        epochs=64
     )

@@ -1,1 +1,14 @@
 node_modules/
+
+# Ignore data being generated
+
+ig_extracted_sprites
+ig_backgrounds
+ig_synthetic_output
+ig_sprite_sheets
+ig_test
+ig_train
+ig_valid
+
+# Big folder containing all the Clash Royale Cards Sprites
+all_clash_royale_cards_sprites
