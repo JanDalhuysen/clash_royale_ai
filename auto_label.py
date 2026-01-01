@@ -57,9 +57,9 @@ def create_yolo_label(img, template_path, class_id, output_dir, confidence_thres
     best_max_val = -1
     for scale in range(1, scale_steps + 1):
         # Calculate current scale factor
-        scale_factor = 1.5 - ((scale - 1) * (0.5 / (scale_steps - 1)))  # Try scales from 150% down to 100%
-        
-        # Resize template
+        start_scale = 2.1
+        end_scale = 1.7
+        scale_factor = start_scale + (scale - 1) * (end_scale - start_scale) / (scale_steps - 1)
         resized_template = cv2.resize(template, None, fx=scale_factor, fy=scale_factor)
         th, tw = resized_template.shape[:2]
         
@@ -112,8 +112,8 @@ def main():
     output_dir = "labels"
     
     # Configuration parameters
-    confidence_threshold = 0.65  # Minimum confidence for a valid match
-    scale_steps = 5
+    confidence_threshold = 0.67  # Minimum confidence for a valid match
+    scale_steps = 3
     box_scale_factor = 0.55  # 55% of the original bounding box size
     
     # Create output directory if it doesn't exist

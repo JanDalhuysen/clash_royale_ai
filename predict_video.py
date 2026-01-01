@@ -7,7 +7,7 @@ import requests
 model = YOLO('best.pt')
 
 # 250, 26, 250+456, 1010
-def show_preds_live_screen(region={'top': 26, 'left': 250, 'width': 706, 'height': 1010}):
+def show_preds_live_screen(region={'top': 1, 'left': 1, 'width': 860, 'height': 1400}):
     with mss.mss() as sct:
         monitor = sct.monitors[1] if region is None else region
         while True:
@@ -15,7 +15,7 @@ def show_preds_live_screen(region={'top': 26, 'left': 250, 'width': 706, 'height
             frame = np.array(sct_img)
             frame = cv2.cvtColor(frame, cv2.COLOR_BGRA2BGR)
 
-            outputs = model.predict(source=frame, conf=0.07, verbose=False)
+            outputs = model.predict(source=frame, conf=0.15, verbose=True)
             boxes = outputs[0].boxes.xyxy.cpu().numpy() if outputs[0].boxes.xyxy.numel() > 0 else []
             scores = outputs[0].boxes.conf.cpu().numpy() if outputs[0].boxes.conf.numel() > 0 else []
             classes = outputs[0].boxes.cls.cpu().numpy() if outputs[0].boxes.cls.numel() > 0 else []
@@ -56,12 +56,12 @@ def show_preds_live_screen(region={'top': 26, 'left': 250, 'width': 706, 'height
                 "enemy_troops": []
             }
             
-            try:
-                response = requests.post("http://localhost:5000/update_detections", json=detection_data)
-                if response.status_code != 200:
-                    print("Failed to update detections:", response.text)
-            except Exception as e:
-                print("Error sending detections to API:", e)
+            # try:
+            #     response = requests.post("http://localhost:5000/update_detections", json=detection_data)
+            #     if response.status_code != 200:
+            #         print("Failed to update detections:", response.text)
+            # except Exception as e:
+            #     print("Error sending detections to API:", e)
                 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break

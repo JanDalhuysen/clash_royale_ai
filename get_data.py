@@ -9,7 +9,9 @@ def save_screenshot(i):
     my_screenshot_image = pyautogui.screenshot()
 
     # Only save region of interest
-    my_screenshot_image = my_screenshot_image.crop((250, 26, 250+456, 1010))
+    #def show_preds_live_screen(region={'top': 1, 'left': 1, 'width': 860, 'height': 1400}):
+    my_screenshot_image = my_screenshot_image.crop((0, 0, 880, 1440))
+    # my_screenshot_image = my_screenshot_image.crop((250, 26, 250+456, 1010))
     my_screenshot_image.save(os.path.join("data", f"{i}.png"))
     print(f"Screenshot {i} saved.")
 
@@ -24,8 +26,9 @@ if existing_files:
 else:
     max_index = -1
 
-# Take screenshot every 5 seconds, continuing numbering
+# Take screenshot every x seconds, continuing numbering
 for i in range(max_index + 1, max_index + 1 + 100):
     save_screenshot(i)
-    # Wait for 4 seconds before taking the next screenshot
-    time.sleep(10)
+    # Wait for x seconds before taking the next screenshot
+    wait_time = 2
+    time.sleep(wait_time)

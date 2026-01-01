@@ -1,6 +1,6 @@
-train: ../ig_train/images
-val: ../ig_valid/images
-test: ../ig_test/images
+train: ../train/images
+val: ../valid/images
+test: ../test/images
 
 nc: 119
 
