@@ -39,7 +39,7 @@ def extract_sprites_from_sheet(sheet_path, output_dir, character_name):
         # --- Step 3: Filter out small noise or giant contours ---
         area = cv2.contourArea(contour)
         # if area < 400 or area > (img.shape[0] * img.shape[1] * 0.9): # Ignore tiny noise and huge areas
-        if area < 2500 or area > 3500: # Ignore tiny noise and huge areas
+        if area < 900 or area > 8000: # Ignore tiny noise and huge areas
             continue
 
         x, y, w, h = cv2.boundingRect(contour)
@@ -63,8 +63,8 @@ def extract_sprites_from_sheet(sheet_path, output_dir, character_name):
     print(f"Successfully extracted and saved {sprite_count} sprites to '{char_output_dir}'")
 
 if __name__ == '__main__':
-    SPRITE_SHEET_DIR = 'ig_sprite_sheets'
-    OUTPUT_SPRITE_DIR = 'ig_extracted_sprites'
+    SPRITE_SHEET_DIR = 'sprite_sheets'
+    OUTPUT_SPRITE_DIR = 'extracted_sprites'
 
     # Process all images in the sprite sheet directory
     for filename in os.listdir(SPRITE_SHEET_DIR):

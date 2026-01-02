@@ -14,7 +14,7 @@ if __name__ == '__main__':
     # Fine-tune the model
     results = model.train(
         data='data.yaml',
-        epochs=128
+        epochs=32
     )
 
 # conda create --name ultralytics-env python=3.11 -y
