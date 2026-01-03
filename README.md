@@ -1,5 +1,21 @@
 # Clash Royale AI
 
+<img width="754" height="738" alt="labler" src="https://github.com/user-attachments/assets/330cc99a-a90b-4906-8d82-05c295759fe6" />
+
+- download_cards.py
+extract_sprites.py
+generate_troop_data.py
+predict_dual.py
+
+- auto_label.py
+data.yaml
+get_data.py
+labler.py
+predict_video.py
+
+- train.py
+
+
 This project contains scripts for automating and analyzing Clash Royale gameplay through computer vision and machine learning:
 
 ## Main Scripts
