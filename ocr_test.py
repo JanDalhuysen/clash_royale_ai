@@ -2,9 +2,10 @@ import cv2
 import pytesseract
 
 # Load the image
-image = cv2.imread('16.png')
+image = cv2.imread("16.png")
 clone = image.copy()
 roi = None
+
 
 def select_roi(event, x, y, flags, param):
     global roi, start_point, drawing, image
@@ -24,6 +25,7 @@ def select_roi(event, x, y, flags, param):
         roi = (start_point[0], start_point[1], end_point[0], end_point[1])
         cv2.rectangle(image, start_point, end_point, (0, 255, 0), 2)
         cv2.imshow("Select ROI", image)
+
 
 drawing = False
 start_point = (-1, -1)
@@ -45,7 +47,7 @@ if roi:
     print(f"Selected area coordinates: ({x1}, {y1}), ({x2}, {y2})")
 
     selected_area = clone[y1:y2, x1:x2]
-    text = pytesseract.image_to_string(selected_area, lang='eng')
+    text = pytesseract.image_to_string(selected_area, lang="eng")
     print(f"Detected text: {text.strip()}")
     cv2.imshow("Selected Area", selected_area)
     cv2.waitKey(0)

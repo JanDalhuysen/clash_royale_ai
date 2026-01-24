@@ -64,9 +64,7 @@ def decompress(data):
         logging.debug(f"dict size: {dict_size}")
         logging.debug(f"uncompressed size: {uncompressed_size}")
 
-        decompressed = lzham.decompress(
-            data[9:], uncompressed_size, {"dict_size_log2": dict_size}
-        )
+        decompressed = lzham.decompress(data[9:], uncompressed_size, {"dict_size_log2": dict_size})
     elif data[0:4] == zstandard.FRAME_HEADER:
         logging.debug("Decompressing using ZSTD ...")
         decompressed = zstandard.decompress(data)
@@ -164,9 +162,7 @@ def process_sctx(base_name, data, path):
     reader.read(key_value_data_size)
     reader.read(52)
 
-    logging.info(
-        f"file_type: {file_type}, some_type: {some_type}, width: {width}, height: {height}"
-    )
+    logging.info(f"file_type: {file_type}, some_type: {some_type}, width: {width}, height: {height}")
 
     if width == 0 or height == 0:
         logging.info("skipping")
@@ -191,9 +187,7 @@ def process_sctx(base_name, data, path):
         block_height,
     )
 
-    logging.debug(
-        f"pixels: {len(pixels)}, block_width: {block_width}, block_height: {block_height}"
-    )
+    logging.debug(f"pixels: {len(pixels)}, block_width: {block_width}, block_height: {block_height}")
 
     img = Image.frombytes("RGBA", (width, height), pixels, "raw", "BGRA")
     img.save(os.path.join(path, f"{base_name}.png"))
@@ -368,10 +362,7 @@ def process_sc(base_dir, base_name, data, path, old):
         width = reader.read_uint16()
         height = reader.read_uint16()
 
-        logging.info(
-            f"file_type: {file_type}, file_size: {file_size}, "
-            f"sub_type: {sub_type}, width: {width}, height: {height}"
-        )
+        logging.info(f"file_type: {file_type}, file_size: {file_size}, sub_type: {sub_type}, width: {width}, height: {height}")
 
         img = None
         if file_type == 27 or file_type == 28:

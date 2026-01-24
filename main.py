@@ -54,6 +54,7 @@ if os.path.exists(images_folder):
 
 exit()
 
+
 def find_button_coordinates_opencv_multiscale(screenshot_path, button_image_path, confidence=0.8, scales=None):
     if scales is None:
         # Try 3 scales from 90% down to 70%
@@ -90,7 +91,13 @@ def find_button_coordinates_opencv_multiscale(screenshot_path, button_image_path
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
 
         if found is None or max_val > found[0]:
-            found = (max_val, max_loc, scale, resized_button_img.shape[1], resized_button_img.shape[0])
+            found = (
+                max_val,
+                max_loc,
+                scale,
+                resized_button_img.shape[1],
+                resized_button_img.shape[0],
+            )
 
     if found and found[0] >= confidence:
         max_val, max_loc, scale_used, btn_w, btn_h = found
@@ -100,11 +107,11 @@ def find_button_coordinates_opencv_multiscale(screenshot_path, button_image_path
         center_y = top_left[1] + btn_h // 2
         return center_x, center_y
     # else:
-        # if found:
-            # print(f"Button '{os.path.basename(button_image_path)}' not found with sufficient confidence (best: {found[0]:.2f} < {confidence})")
-        # else:
-            # print(f"Button '{os.path.basename(button_image_path)}' not found (no potential matches).")
-        # return None
+    # if found:
+    # print(f"Button '{os.path.basename(button_image_path)}' not found with sufficient confidence (best: {found[0]:.2f} < {confidence})")
+    # else:
+    # print(f"Button '{os.path.basename(button_image_path)}' not found (no potential matches).")
+    # return None
 
 
 def find_button_coordinates_opencv(screenshot_path, button_image_path, confidence=0.8):
@@ -138,7 +145,7 @@ def find_button_coordinates_opencv(screenshot_path, button_image_path, confidenc
     except Exception as e:
         print(f"Error during OpenCV image matching for '{os.path.basename(button_image_path)}': {e}")
         return None
-    
+
 
 # Loop through all images in the 'images' folder and try to find them in 'original.png'
 images_folder = "all_cards_small_cropped"
@@ -147,13 +154,13 @@ if os.path.exists(images_folder):
         image_path = os.path.join(images_folder, image_to_find)
         if os.path.isfile(image_path):
             # button_coordinates = find_button_coordinates_opencv("original.png", image_path, confidence=0.3)
-            button_coordinates = find_button_coordinates_opencv_multiscale("original.png", image_path, confidence=0.8) # Adjust confidence
+            button_coordinates = find_button_coordinates_opencv_multiscale("original.png", image_path, confidence=0.8)  # Adjust confidence
             screenshot = cv2.imread("original.png")
             button_img = cv2.imread(image_path)
             # if screenshot is not None:
-                # print(f"Screenshot dimensions: {screenshot.shape}")
+            # print(f"Screenshot dimensions: {screenshot.shape}")
             # if button_img is not None:
-                # print(f"Button image dimensions: {button_img.shape}")
+            # print(f"Button image dimensions: {button_img.shape}")
 
             if button_coordinates:
                 x, y = button_coordinates
@@ -162,7 +169,10 @@ if os.path.exists(images_folder):
                 screenshot = cv2.imread("original.png")
                 button_img = cv2.imread(image_path)
                 if screenshot is not None and button_img is not None:
-                    button_w, button_h = button_img.shape[1], button_img.shape[0]
+                    button_w, button_h = (
+                        button_img.shape[1],
+                        button_img.shape[0],
+                    )
                     # Calculate top-left corner from center
                     top_left_x = int(x - button_w // 2)
                     top_left_y = int(y - button_h // 2)
@@ -172,7 +182,8 @@ if os.path.exists(images_folder):
                         screenshot,
                         (top_left_x, top_left_y),
                         (bottom_right_x, bottom_right_y),
-                        (0, 0, 255), 2
+                        (0, 0, 255),
+                        2,
                     )
                     # Save or show the image with the rectangle
                     out_path = f"found_{os.path.splitext(image_to_find)[0]}.png"
@@ -197,7 +208,7 @@ im1.save(r"in.png")
 im1.save(r"original.png")
 
 # Path to the uploaded image
-image_path = 'in.png'
+image_path = "in.png"
 
 try:
     # --- Load the image with OpenCV ---
@@ -214,11 +225,11 @@ try:
 
     # --- Dilate the edges (Optional but often helpful) ---
     kernel = np.ones((3, 3), np.uint8)  # Adjust kernel size as needed
-    dilated_edges = cv2.dilate(edges, kernel, iterations=1) # Adjust iterations as needed
+    dilated_edges = cv2.dilate(edges, kernel, iterations=1)  # Adjust iterations as needed
 
     # --- Find contours ---
     contours, _ = cv2.findContours(dilated_edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
+
     # --- Filter contours to identify button-like shapes ---
     button_count = 0
 
@@ -228,18 +239,18 @@ try:
 
         # Filter based on area and aspect ratio to consider it a button
         # check if the button is in the lower half of the image
-        if ((y > img_cv.shape[0] / 2) and (y < img_cv.shape[0]-80) and (w > 10) and (h > 10)):
-        # if min_button_area < w * h < max_button_area and 1.5 <= aspect_ratio <= 5.0: # Adjust aspect ratio as needed
+        if (y > img_cv.shape[0] / 2) and (y < img_cv.shape[0] - 80) and (w > 10) and (h > 10):
+            # if min_button_area < w * h < max_button_area and 1.5 <= aspect_ratio <= 5.0: # Adjust aspect ratio as needed
             # --- Crop the button using PIL for easier text extraction ---
             img_pil = Image.open(image_path).convert("RGB")
             cropped_button = img_pil.crop((x, y, x + w, y + h))
 
             # --- Perform OCR to get the text from the button ---
             try:
-                button_text = pytesseract.image_to_string(cropped_button, config='--psm 6')
+                button_text = pytesseract.image_to_string(cropped_button, config="--psm 6")
                 button_text = button_text.strip().lower()
                 # replace special characters with space
-                button_text = ''.join(e if e.isalnum() else ' ' for e in button_text)
+                button_text = "".join(e if e.isalnum() else " " for e in button_text)
 
                 words_to_choose_from.append(button_text)
 
@@ -426,7 +437,7 @@ time.sleep(1)
 #     print(f"Prompt: '{prompt}'")
 
 #     translation = get_translation_from_ollama(image_path, prompt, model_name)
-    
+
 # print(" ")
 # print("Final translation:")
 # print(translation)
@@ -468,16 +479,16 @@ time.sleep(1)
 #     words = translation.split()
 #     # remove commas, periods, question marks and exclamation marks from the words
 #     words = [word.replace(",", "").replace(".", "").replace("?", "").replace("!", "") for word in words]
-    
+
 #     print(" ")
 #     print(f"Words to click: {words}")
 #     print(" ")
-    
+
 #     for i in range(len(words)):
 #         word = words[i]
 #         # Path to the button image
 #         button_image_path = f'{word.lower()}.png'
-        
+
 #         # use OpenCV to find button coordinates
 #         button_coordinates = find_button_coordinates_opencv("original.png", button_image_path, confidence=0.8)
 
@@ -487,7 +498,7 @@ time.sleep(1)
 #             pyautogui.moveTo(x, y, duration=1)
 #             pyautogui.click()
 #             time.sleep(0.5)
-    
+
 #     # Check
 #     pyautogui.moveTo(1433, 936, duration=2)
 #     pyautogui.click()

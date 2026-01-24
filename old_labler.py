@@ -4,36 +4,36 @@ import os
 import glob
 
 # --- Configuration ---
-IMAGE_FOLDER = 'images_to_label'  # Folder containing your game screenshots/images
-OUTPUT_LABEL_FOLDER = 'labels'    # Folder where YOLO .txt label files will be saved
+IMAGE_FOLDER = "images_to_label"  # Folder containing your game screenshots/images
+OUTPUT_LABEL_FOLDER = "labels"  # Folder where YOLO .txt label files will be saved
 
 # Card: card in current hand
 # Troop: troop that has been placed
 
 # Current deck
 CLASS_NAMES = [
-"BabyDragonCard",
-"GoblinBarrelCard",
-"MinerCard",
-"MusketeerCard",
-"RamRiderCard",
-"SkeletonArmyCard",
-"SpearGoblinsCard",
-"WitchCard",
-"BabyDragon",
-"GoblinBarrel",
-"Miner",
-"Musketeer",
-"RamRider",
-"SkeletonArmy",
-"SpearGoblins",
-"Witch"
+    "BabyDragonCard",
+    "GoblinBarrelCard",
+    "MinerCard",
+    "MusketeerCard",
+    "RamRiderCard",
+    "SkeletonArmyCard",
+    "SpearGoblinsCard",
+    "WitchCard",
+    "BabyDragon",
+    "GoblinBarrel",
+    "Miner",
+    "Musketeer",
+    "RamRider",
+    "SkeletonArmy",
+    "SpearGoblins",
+    "Witch",
 ]
 
-WINDOW_NAME = 'YOLO Labeling Tool'
+WINDOW_NAME = "YOLO Labeling Tool"
 BOX_COLOR = (0, 255, 0)  # Green for current box
-SAVED_BOX_COLOR = (255, 100, 0) # Blue for saved boxes
-TEXT_COLOR = (0, 0, 0) # Black for text
+SAVED_BOX_COLOR = (255, 100, 0)  # Blue for saved boxes
+TEXT_COLOR = (0, 0, 0)  # Black for text
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 FONT_SCALE = 0.7
 LINE_THICKNESS = 2
@@ -42,25 +42,27 @@ LINE_THICKNESS = 2
 image_files = []
 current_image_index = 0
 current_image = None
-display_image = None # Image to draw on (a copy)
+display_image = None  # Image to draw on (a copy)
 current_bboxes = []  # List of {'class_id': int, 'bbox': [x_min, y_min, x_max, y_max]}
 drawing = False
-ref_point = [] # Stores (x1, y1) of the current drawing box
+ref_point = []  # Stores (x1, y1) of the current drawing box
 current_class_id = 0
+
 
 def get_image_paths(folder):
     """Gets all jpg, png, jpeg image paths from a folder."""
-    patterns = ['*.jpg', '*.jpeg', '*.png']
+    patterns = ["*.jpg", "*.jpeg", "*.png"]
     paths = []
     for pattern in patterns:
         paths.extend(glob.glob(os.path.join(folder, pattern)))
     return sorted(paths)
 
+
 def yolo_format(class_id, bbox, img_width, img_height):
     """Converts bbox [x_min, y_min, x_max, y_max] to YOLO format."""
     x_min, y_min, x_max, y_max = bbox
-    dw = 1. / img_width
-    dh = 1. / img_height
+    dw = 1.0 / img_width
+    dh = 1.0 / img_height
     x_center = (x_min + x_max) / 2.0
     y_center = (y_min + y_max) / 2.0
     w = x_max - x_min
@@ -72,6 +74,7 @@ def yolo_format(class_id, bbox, img_width, img_height):
     h_norm = h * dh
     return f"{class_id} {x_center_norm:.6f} {y_center_norm:.6f} {w_norm:.6f} {h_norm:.6f}\n"
 
+
 def save_labels():
     """Saves current_bboxes to a .txt file in YOLO format."""
     global current_image_index, image_files, current_bboxes, OUTPUT_LABEL_FOLDER
@@ -81,20 +84,21 @@ def save_labels():
 
     img_path = image_files[current_image_index]
     img_filename = os.path.basename(img_path)
-    label_filename = os.path.splitext(img_filename)[0] + '.txt'
+    label_filename = os.path.splitext(img_filename)[0] + ".txt"
     label_filepath = os.path.join(OUTPUT_LABEL_FOLDER, label_filename)
 
     if current_image is None:
         print("Error: current_image is not loaded. Cannot get dimensions.")
         return
-        
+
     img_height, img_width = current_image.shape[:2]
 
-    with open(label_filepath, 'w') as f:
+    with open(label_filepath, "w") as f:
         for item in current_bboxes:
-            yolo_line = yolo_format(item['class_id'], item['bbox'], img_width, img_height)
+            yolo_line = yolo_format(item["class_id"], item["bbox"], img_width, img_height)
             f.write(yolo_line)
     print(f"Labels saved to: {label_filepath}")
+
 
 def load_image_and_labels(index):
     """Loads image and its existing labels if any."""
@@ -108,19 +112,19 @@ def load_image_and_labels(index):
     if current_image is None:
         print(f"Error loading image: {img_path}")
         return False
-    
+
     display_image = current_image.copy()
-    current_bboxes = [] # Reset bboxes for the new image
+    current_bboxes = []  # Reset bboxes for the new image
 
     # Load existing labels for this image if they exist
     img_filename = os.path.basename(img_path)
-    label_filename = os.path.splitext(img_filename)[0] + '.txt'
+    label_filename = os.path.splitext(img_filename)[0] + ".txt"
     label_filepath = os.path.join(OUTPUT_LABEL_FOLDER, label_filename)
 
     if os.path.exists(label_filepath):
         print(f"Loading existing labels from: {label_filepath}")
         img_h, img_w = current_image.shape[:2]
-        with open(label_filepath, 'r') as f:
+        with open(label_filepath, "r") as f:
             for line in f:
                 parts = line.strip().split()
                 if len(parts) == 5:
@@ -140,11 +144,17 @@ def load_image_and_labels(index):
                     y_min = int(y_center - (box_h / 2))
                     x_max = int(x_center + (box_w / 2))
                     y_max = int(y_center + (box_h / 2))
-                    
-                    current_bboxes.append({'class_id': class_id, 'bbox': [x_min, y_min, x_max, y_max]})
-    
+
+                    current_bboxes.append(
+                        {
+                            "class_id": class_id,
+                            "bbox": [x_min, y_min, x_max, y_max],
+                        }
+                    )
+
     redraw_image()
     return True
+
 
 def redraw_image():
     """Redraws the image with current bboxes and info text."""
@@ -155,13 +165,33 @@ def redraw_image():
 
     # Draw saved bounding boxes
     for item in current_bboxes:
-        class_id = item['class_id']
-        x_min, y_min, x_max, y_max = item['bbox']
-        cv2.rectangle(display_image, (x_min, y_min), (x_max, y_max), SAVED_BOX_COLOR, LINE_THICKNESS)
+        class_id = item["class_id"]
+        x_min, y_min, x_max, y_max = item["bbox"]
+        cv2.rectangle(
+            display_image,
+            (x_min, y_min),
+            (x_max, y_max),
+            SAVED_BOX_COLOR,
+            LINE_THICKNESS,
+        )
         label_text = CLASS_NAMES[class_id]
         (w, h), _ = cv2.getTextSize(label_text, FONT, FONT_SCALE, LINE_THICKNESS)
-        cv2.rectangle(display_image, (x_min, y_min - h - 5), (x_min + w, y_min -5), SAVED_BOX_COLOR, -1)
-        cv2.putText(display_image, label_text, (x_min, y_min - 5), FONT, FONT_SCALE, TEXT_COLOR, LINE_THICKNESS)
+        cv2.rectangle(
+            display_image,
+            (x_min, y_min - h - 5),
+            (x_min + w, y_min - 5),
+            SAVED_BOX_COLOR,
+            -1,
+        )
+        cv2.putText(
+            display_image,
+            label_text,
+            (x_min, y_min - 5),
+            FONT,
+            FONT_SCALE,
+            TEXT_COLOR,
+            LINE_THICKNESS,
+        )
 
     # Draw current drawing box if any
     if drawing and len(ref_point) == 2:
@@ -172,17 +202,71 @@ def redraw_image():
     info_text_image = f"Image: {os.path.basename(image_files[current_image_index])} ({current_image_index + 1}/{len(image_files)})"
     info_text_controls = "N/P:Class | S:Save | D:Del | Space:Next | Q:Quit"
 
-    cv2.putText(display_image, info_text_class, (10, 30), FONT, FONT_SCALE, (255,255,255), LINE_THICKNESS+1, cv2.LINE_AA)
-    cv2.putText(display_image, info_text_class, (10, 30), FONT, FONT_SCALE, TEXT_COLOR, LINE_THICKNESS, cv2.LINE_AA)
+    cv2.putText(
+        display_image,
+        info_text_class,
+        (10, 30),
+        FONT,
+        FONT_SCALE,
+        (255, 255, 255),
+        LINE_THICKNESS + 1,
+        cv2.LINE_AA,
+    )
+    cv2.putText(
+        display_image,
+        info_text_class,
+        (10, 30),
+        FONT,
+        FONT_SCALE,
+        TEXT_COLOR,
+        LINE_THICKNESS,
+        cv2.LINE_AA,
+    )
 
-    cv2.putText(display_image, info_text_image, (10, 60), FONT, FONT_SCALE, (255,255,255), LINE_THICKNESS+1, cv2.LINE_AA)
-    cv2.putText(display_image, info_text_image, (10, 60), FONT, FONT_SCALE, TEXT_COLOR, LINE_THICKNESS, cv2.LINE_AA)
-    
-    cv2.putText(display_image, info_text_controls, (10, 90), FONT, FONT_SCALE, (255,255,255), LINE_THICKNESS+1, cv2.LINE_AA)
-    cv2.putText(display_image, info_text_controls, (10, 90), FONT, FONT_SCALE, TEXT_COLOR, LINE_THICKNESS, cv2.LINE_AA)
+    cv2.putText(
+        display_image,
+        info_text_image,
+        (10, 60),
+        FONT,
+        FONT_SCALE,
+        (255, 255, 255),
+        LINE_THICKNESS + 1,
+        cv2.LINE_AA,
+    )
+    cv2.putText(
+        display_image,
+        info_text_image,
+        (10, 60),
+        FONT,
+        FONT_SCALE,
+        TEXT_COLOR,
+        LINE_THICKNESS,
+        cv2.LINE_AA,
+    )
 
+    cv2.putText(
+        display_image,
+        info_text_controls,
+        (10, 90),
+        FONT,
+        FONT_SCALE,
+        (255, 255, 255),
+        LINE_THICKNESS + 1,
+        cv2.LINE_AA,
+    )
+    cv2.putText(
+        display_image,
+        info_text_controls,
+        (10, 90),
+        FONT,
+        FONT_SCALE,
+        TEXT_COLOR,
+        LINE_THICKNESS,
+        cv2.LINE_AA,
+    )
 
     cv2.imshow(WINDOW_NAME, display_image)
+
 
 def mouse_callback(event, x, y, flags, param):
     """Handles mouse events for drawing bounding boxes."""
@@ -193,11 +277,11 @@ def mouse_callback(event, x, y, flags, param):
         drawing = True
     elif event == cv2.EVENT_MOUSEMOVE:
         if drawing:
-            ref_point.append((x, y)) # Store current mouse position as the second point
-            temp_display = display_image.copy() # Use a copy for temporary drawing
-            cv2.rectangle(temp_display, ref_point[0], (x,y) , BOX_COLOR, LINE_THICKNESS)
+            ref_point.append((x, y))  # Store current mouse position as the second point
+            temp_display = display_image.copy()  # Use a copy for temporary drawing
+            cv2.rectangle(temp_display, ref_point[0], (x, y), BOX_COLOR, LINE_THICKNESS)
             cv2.imshow(WINDOW_NAME, temp_display)
-            ref_point.pop() # Remove the temporary second point
+            ref_point.pop()  # Remove the temporary second point
     elif event == cv2.EVENT_LBUTTONUP:
         drawing = False
         ref_point.append((x, y))
@@ -207,12 +291,18 @@ def mouse_callback(event, x, y, flags, param):
         y_min = min(ref_point[0][1], ref_point[1][1])
         x_max = max(ref_point[0][0], ref_point[1][0])
         y_max = max(ref_point[0][1], ref_point[1][1])
-        
+
         # Ignore very small boxes
         if (x_max - x_min) > 5 and (y_max - y_min) > 5:
-            current_bboxes.append({'class_id': current_class_id, 'bbox': [x_min, y_min, x_max, y_max]})
+            current_bboxes.append(
+                {
+                    "class_id": current_class_id,
+                    "bbox": [x_min, y_min, x_max, y_max],
+                }
+            )
         ref_point = []
         redraw_image()
+
 
 def main():
     global image_files, current_image_index, current_class_id, current_bboxes
@@ -235,43 +325,43 @@ def main():
     cv2.setMouseCallback(WINDOW_NAME, mouse_callback)
 
     if not load_image_and_labels(current_image_index):
-        return # Exit if first image fails to load
+        return  # Exit if first image fails to load
 
     while True:
-        redraw_image() # Ensure display is up-to-date
+        redraw_image()  # Ensure display is up-to-date
         key = cv2.waitKey(1) & 0xFF
 
-        if key == ord('q'): # Quit
+        if key == ord("q"):  # Quit
             break
-        elif key == ord('n'): # Next class
+        elif key == ord("n"):  # Next class
             current_class_id = (current_class_id + 1) % len(CLASS_NAMES)
-        elif key == ord('p'): # Previous class
+        elif key == ord("p"):  # Previous class
             current_class_id = (current_class_id - 1 + len(CLASS_NAMES)) % len(CLASS_NAMES)
-        elif key == ord('s'): # Save labels
+        elif key == ord("s"):  # Save labels
             save_labels()
-        elif key == ord('d'): # Delete last bounding box
+        elif key == ord("d"):  # Delete last bounding box
             if current_bboxes:
                 current_bboxes.pop()
-        elif key == ord(' ') or key == 13: # Space or Enter for Next image
-            save_labels() # Save current before moving to next
-            current_image_index = (current_image_index + 1)
+        elif key == ord(" ") or key == 13:  # Space or Enter for Next image
+            save_labels()  # Save current before moving to next
+            current_image_index = current_image_index + 1
             if current_image_index >= len(image_files):
                 print("Reached end of images.")
-                current_image_index = len(image_files) -1 # Stay on last image or handle as desired
+                current_image_index = len(image_files) - 1  # Stay on last image or handle as desired
                 # Or break if you want to quit after last image
-                # break 
+                # break
             if not load_image_and_labels(current_image_index):
-                if current_image_index >= len(image_files): # If loading failed because it's past the end
+                if current_image_index >= len(image_files):  # If loading failed because it's past the end
                     break
-                else: # If loading failed for other reasons, try to go to next valid one
+                else:  # If loading failed for other reasons, try to go to next valid one
                     print(f"Skipping problematic image {image_files[current_image_index]}")
-                    current_image_index = (current_image_index + 1)
+                    current_image_index = current_image_index + 1
                     if current_image_index >= len(image_files):
                         break
                     load_image_and_labels(current_image_index)
 
-
     cv2.destroyAllWindows()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

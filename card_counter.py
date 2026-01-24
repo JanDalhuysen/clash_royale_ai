@@ -86,7 +86,7 @@ CARD_SLOT_ROIS = [
 #     (611, 907, 75, 62),  # Slot 4
 # ]
 
-#Spectate
+# Spectate
 # CARD_SLOT_ROIS = [
 #     (314, 925, 56, 71),  # Slot 1
 #     (372, 927, 58, 71),  # Slot 2
@@ -102,8 +102,8 @@ MATCH_CONFIDENCE = 0.10
 # 4. POLLING RATE (seconds)
 #    How often to check the hand. Too fast can be CPU intensive or catch animations.
 #    Too slow might miss quick plays. Clash Royale has ~1 sec global cooldown.
-POLL_INTERVAL = 0.75 # seconds
-POLL_INTERVAL = 0.5 # seconds
+POLL_INTERVAL = 0.75  # seconds
+POLL_INTERVAL = 0.5  # seconds
 
 # --- Load Template Images ---
 loaded_templates = {}
@@ -130,6 +130,7 @@ if len(loaded_templates) != 8:
 
 
 # --- Helper Functions ---
+
 
 def pick_unique_cards(slot_matches):
     """
@@ -158,6 +159,7 @@ def pick_unique_cards(slot_matches):
     # return the chosen names
     return [slot_matches[i][best_choice[i]][0] for i in range(len(slot_matches))]
 
+
 def identify_card_in_slot(slot_screenshot_cv, templates_dict):
     """Attempts to identify the two best matching cards in a given slot image."""
     matches = []
@@ -170,7 +172,10 @@ def identify_card_in_slot(slot_screenshot_cv, templates_dict):
         # Resize template if it's larger than the slot in any dimension
         if temp_h > slot_h or temp_w > slot_w:
             scale = min(slot_h / temp_h, slot_w / temp_w)
-            new_size = (max(1, int(temp_w * scale)), max(1, int(temp_h * scale)))
+            new_size = (
+                max(1, int(temp_w * scale)),
+                max(1, int(temp_h * scale)),
+            )
             temp_img = cv2.resize(temp_img, new_size)
             temp_h, temp_w = temp_img.shape[:2]
 
@@ -195,6 +200,7 @@ def identify_card_in_slot(slot_screenshot_cv, templates_dict):
         best_matches.append((None, -1.0))
     return best_matches
 
+
 def load_all_templates_from_folder(folder_path):
     """
     Loads all PNG images from the given folder into a dictionary.
@@ -211,6 +217,7 @@ def load_all_templates_from_folder(folder_path):
             else:
                 print(f"Warning: Could not load {img_path}")
     return templates
+
 
 def recognize_deck_cards_from_region(num_cards=8):
     """
@@ -236,7 +243,12 @@ def recognize_deck_cards_from_region(num_cards=8):
         return
 
     screenshot_cv = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
-    roi = cv2.selectROI("Select DECK region (all cards)", screenshot_cv, fromCenter=False, showCrosshair=True)
+    roi = cv2.selectROI(
+        "Select DECK region (all cards)",
+        screenshot_cv,
+        fromCenter=False,
+        showCrosshair=True,
+    )
     cv2.destroyWindow("Select DECK region (all cards)")
 
     if roi == (0, 0, 0, 0):
@@ -244,7 +256,7 @@ def recognize_deck_cards_from_region(num_cards=8):
         return
 
     x, y, w, h = roi
-    deck_region = screenshot_cv[y:y+h, x:x+w]
+    deck_region = screenshot_cv[y : y + h, x : x + w]
 
     card_width = w // 4
     card_height = h // 2
@@ -253,8 +265,8 @@ def recognize_deck_cards_from_region(num_cards=8):
         for col in range(4):
             cx = col * card_width
             cy = row * card_height
-            card_img = deck_region[cy:cy+card_height, cx:cx+card_width]
-            cv2.imshow(f"Card {row*4+col+1}", card_img)
+            card_img = deck_region[cy : cy + card_height, cx : cx + card_width]
+            cv2.imshow(f"Card {row * 4 + col + 1}", card_img)
             cv2.waitKey(0)
 
             matches = identify_card_in_slot(card_img, all_templates)
@@ -264,7 +276,8 @@ def recognize_deck_cards_from_region(num_cards=8):
     print("\nDetected card names in region (left to right):")
     for idx, name in enumerate(card_names, 1):
         print(f"Card {idx}: {name}")
-        print(f"\"{name}\": r\"C:\\gitsync\\jan_projects\\clash_royale_ai\\all_cards_small_cropped2\\{name}\",")
+        print(f'"{name}": r"C:\\gitsync\\jan_projects\\clash_royale_ai\\all_cards_small_cropped2\\{name}",')
+
 
 def get_rois_for_slots_utility(num_slots=4):
     """
@@ -287,54 +300,67 @@ def get_rois_for_slots_utility(num_slots=4):
     screenshot_cv = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
 
     rois = []
-    temp_screenshot_cv = screenshot_cv.copy() # Draw on a copy
+    temp_screenshot_cv = screenshot_cv.copy()  # Draw on a copy
 
     for i in range(num_slots):
         # Check if a template is available to suggest size
         example_template = next(iter(loaded_templates.values()), None)
-        window_title = f"Select ROI for Slot {i+1}"
+        window_title = f"Select ROI for Slot {i + 1}"
         if example_template is not None:
             h, w = example_template.shape[:2]
             window_title += f" (Approx {w}x{h})"
 
         while True:
-            roi = cv2.selectROI(window_title, temp_screenshot_cv, fromCenter=False, showCrosshair=True)
-            if roi == (0,0,0,0): # User pressed ESC or closed
+            roi = cv2.selectROI(
+                window_title,
+                temp_screenshot_cv,
+                fromCenter=False,
+                showCrosshair=True,
+            )
+            if roi == (0, 0, 0, 0):  # User pressed ESC or closed
                 action = input("Selection cancelled for this slot. (s)kip slot, (r)etry, or (q)uit utility? [s/r/q]: ").lower()
-                if action == 'q':
+                if action == "q":
                     cv2.destroyAllWindows()
                     print("ROI selection aborted.")
                     return None
-                elif action == 'r':
-                    continue # Retry selection for this slot
-                else: # Skip slot
-                    rois.append(None) # Add a placeholder for skipped slot
+                elif action == "r":
+                    continue  # Retry selection for this slot
+                else:  # Skip slot
+                    rois.append(None)  # Add a placeholder for skipped slot
                     cv2.destroyWindow(window_title)
                     break
             else:
                 rois.append(roi)
-                x,y,w,h = roi
+                x, y, w, h = roi
                 # Draw rectangle on the image to show what's been selected so far
-                cv2.rectangle(temp_screenshot_cv, (x,y), (x+w, y+h), (0,255,0), 2)
-                cv2.putText(temp_screenshot_cv, f"Slot {i+1}", (x, y-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1)
+                cv2.rectangle(temp_screenshot_cv, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                cv2.putText(
+                    temp_screenshot_cv,
+                    f"Slot {i + 1}",
+                    (x, y - 5),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    (0, 255, 0),
+                    1,
+                )
                 cv2.destroyWindow(window_title)
                 break
-
 
     print("\n--- Selected ROIs (x, y, w, h) ---")
     print("Copy the following list into the CARD_SLOT_ROIS variable in your script:")
     print("CARD_SLOT_ROIS = [")
     for i, r in enumerate(rois):
         if r:
-            print(f"    ({r[0]}, {r[1]}, {r[2]}, {r[3]}),  # Slot {i+1}")
+            print(f"    ({r[0]}, {r[1]}, {r[2]}, {r[3]}),  # Slot {i + 1}")
         else:
-            print(f"    None,  # Slot {i+1} (Skipped)")
+            print(f"    None,  # Slot {i + 1} (Skipped)")
     print("]")
 
     cv2.imshow("All Selected ROIs (Press any key to close)", temp_screenshot_cv)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     return rois
+
 
 # --- Main Tracking Logic ---
 def run_card_tracker():
@@ -344,12 +370,11 @@ def run_card_tracker():
 
     # Filter out None ROIs if user skipped some during utility
     valid_slot_rois = [roi for roi in CARD_SLOT_ROIS if roi is not None and len(roi) == 4]
-    if not valid_slot_rois or len(valid_slot_rois) != 4 : # Check if all 4 are defined
+    if not valid_slot_rois or len(valid_slot_rois) != 4:  # Check if all 4 are defined
         print(f"ERROR: CARD_SLOT_ROIS is not properly defined. Expected 4 valid slot definitions.")
         print(f"Current CARD_SLOT_ROIS: {CARD_SLOT_ROIS}")
         print("Please run the `get_rois_for_slots_utility()` or manually define them correctly.")
         return
-
 
     card_usage_counts = {card_name: 0 for card_name in loaded_templates}
     # Stores card names identified in each slot from the previous frame
@@ -358,7 +383,7 @@ def run_card_tracker():
     print("\n--- Starting Card Tracker ---")
     print(f"Monitoring {len(valid_slot_rois)} card slots. Press Ctrl+C to stop.")
     print(f"Deck: {list(loaded_templates.keys())}")
-    time.sleep(1) # Give a moment to switch to game window
+    time.sleep(1)  # Give a moment to switch to game window
 
     try:
         while True:
@@ -376,18 +401,19 @@ def run_card_tracker():
                 time.sleep(POLL_INTERVAL)
                 continue
 
-
             # 1. Identify cards in each slot for the current frame
             slot_matches = []
             for i, slot_roi in enumerate(valid_slot_rois):
                 x, y, w, h = slot_roi
                 # Ensure ROI coordinates are within the screenshot bounds
                 if x < 0 or y < 0 or x + w > overall_screenshot_cv.shape[1] or y + h > overall_screenshot_cv.shape[0]:
-                    print(f"Warning: Slot {i+1} ROI ({x},{y},{w},{h}) is out of screenshot bounds ({overall_screenshot_cv.shape[1]}x{overall_screenshot_cv.shape[0]}). Skipping slot.")
+                    print(
+                        f"Warning: Slot {i + 1} ROI ({x},{y},{w},{h}) is out of screenshot bounds ({overall_screenshot_cv.shape[1]}x{overall_screenshot_cv.shape[0]}). Skipping slot."
+                    )
                     continue
 
-                slot_img_cv = overall_screenshot_cv[y:y+h, x:x+w]
-                slot_images_for_debug_view.append(slot_img_cv.copy()) # For debug display
+                slot_img_cv = overall_screenshot_cv[y : y + h, x : x + w]
+                slot_images_for_debug_view.append(slot_img_cv.copy())  # For debug display
 
                 matches = identify_card_in_slot(slot_img_cv, loaded_templates)
                 slot_matches.append(matches)
@@ -397,7 +423,7 @@ def run_card_tracker():
             for idx, card_name in enumerate(selected, start=1):
                 # print(f"Slot {idx}: {card_name}")
                 # store for your usage‐count logic:
-                current_hand_cards_in_slots[idx-1] = card_name
+                current_hand_cards_in_slots[idx - 1] = card_name
 
             # Debug: Display what's seen in slots
             if slot_images_for_debug_view:
@@ -406,15 +432,19 @@ def run_card_tracker():
                     min_height = min(img.shape[0] for img in slot_images_for_debug_view)
                     min_width = min(img.shape[1] for img in slot_images_for_debug_view)
                     # Resize all images to the minimum width and height
-                    resized_slots = [
-                        cv2.resize(img, (min_width, min_height))
-                        for img in slot_images_for_debug_view
-                    ]
+                    resized_slots = [cv2.resize(img, (min_width, min_height)) for img in slot_images_for_debug_view]
                     combined_slots_img = np.hstack(resized_slots)
 
                     # --- Make debug window bigger ---
                     scale_factor = 2  # Increase to 2x size
-                    display_img = cv2.resize(combined_slots_img, (combined_slots_img.shape[1]*scale_factor, combined_slots_img.shape[0]*scale_factor), interpolation=cv2.INTER_NEAREST)
+                    display_img = cv2.resize(
+                        combined_slots_img,
+                        (
+                            combined_slots_img.shape[1] * scale_factor,
+                            combined_slots_img.shape[0] * scale_factor,
+                        ),
+                        interpolation=cv2.INTER_NEAREST,
+                    )
                     cv2.imshow("Detected Slots", display_img)
 
                     # --- New: Show predictions overlay ---
@@ -424,17 +454,30 @@ def run_card_tracker():
                         card_name = current_hand_cards_in_slots[idx]
                         label = card_name if card_name else "?"
                         cv2.putText(
-                            annotated, label, (5, min_height - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA
+                            annotated,
+                            label,
+                            (5, min_height - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.6,
+                            (0, 255, 0),
+                            2,
+                            cv2.LINE_AA,
                         )
                         annotated_slots.append(annotated)
                     combined_annotated = np.hstack(annotated_slots)
                     # --- Make prediction window bigger ---
-                    display_annotated = cv2.resize(combined_annotated, (combined_annotated.shape[1]*scale_factor, combined_annotated.shape[0]*scale_factor), interpolation=cv2.INTER_NEAREST)
+                    display_annotated = cv2.resize(
+                        combined_annotated,
+                        (
+                            combined_annotated.shape[1] * scale_factor,
+                            combined_annotated.shape[0] * scale_factor,
+                        ),
+                        interpolation=cv2.INTER_NEAREST,
+                    )
                     cv2.imshow("Slots with Predictions", display_annotated)
                     # -----------------------------------
 
-                    if cv2.waitKey(1) & 0xFF == ord('q'): # Press 'q' in either window to quit
+                    if cv2.waitKey(1) & 0xFF == ord("q"):  # Press 'q' in either window to quit
                         break
                 except Exception as e:
                     print(f"Error creating debug view: {e}")
@@ -458,7 +501,7 @@ def run_card_tracker():
                 # print(f"Prev hand slots: {previous_hand_cards_in_slots}")
                 # print(f"Curr hand slots: {current_hand_cards_in_slots}")
                 for card_name in played_this_cycle:
-                    if card_name in card_usage_counts: # Should always be true
+                    if card_name in card_usage_counts:  # Should always be true
                         card_usage_counts[card_name] += 1
                         print(f"  => Card Played: {card_name} \t \t (Total Uses: {card_usage_counts[card_name]})")
 
@@ -469,7 +512,7 @@ def run_card_tracker():
                 # print("--------------------")
 
             # 3. Update previous_hand_state for the next iteration
-            previous_hand_cards_in_slots = list(current_hand_cards_in_slots) # Make a copy
+            previous_hand_cards_in_slots = list(current_hand_cards_in_slots)  # Make a copy
 
             time.sleep(POLL_INTERVAL)
 

@@ -3,7 +3,8 @@ import sys
 
 from ultralytics import YOLO
 
-model = YOLO('best.pt')
+model = YOLO("best.pt")
+
 
 def show_preds_image(image_path):
     # print(model.info())
@@ -39,10 +40,11 @@ def show_preds_image(image_path):
                 (int(det[2]), int(det[3])),
                 color=(0, 0, 255),
                 thickness=2,
-                lineType=cv2.LINE_AA
+                lineType=cv2.LINE_AA,
             )
-    
+
     return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
 
 if __name__ == "__main__":
     image_path = sys.argv[1]

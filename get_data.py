@@ -3,17 +3,19 @@ import numpy as np
 import time
 import os
 
+
 # Save the screenshot in data folder with name i.png
 def save_screenshot(i):
     # Take a screenshot of the screen
     my_screenshot_image = pyautogui.screenshot()
 
     # Only save region of interest
-    #def show_preds_live_screen(region={'top': 1, 'left': 1, 'width': 860, 'height': 1400}):
+    # def show_preds_live_screen(region={'top': 1, 'left': 1, 'width': 860, 'height': 1400}):
     my_screenshot_image = my_screenshot_image.crop((0, 0, 880, 1440))
     # my_screenshot_image = my_screenshot_image.crop((250, 26, 250+456, 1010))
     my_screenshot_image.save(os.path.join("data", f"{i}.png"))
     print(f"Screenshot {i} saved.")
+
 
 # Create data folder if it doesn't exist
 if not os.path.exists("data"):
@@ -30,5 +32,5 @@ else:
 for i in range(max_index + 1, max_index + 1 + 100):
     save_screenshot(i)
     # Wait for x seconds before taking the next screenshot
-    wait_time = 2
+    wait_time = 1
     time.sleep(wait_time)

@@ -11,16 +11,18 @@ import pyautogui
 # saves a screenshot and touch coordinates to files
 # when a touch is detected, and organizes the data into separate folders.
 
+
 # Save the screenshot in data folder with name i.png
 def save_screenshot(i):
     # Take a screenshot of the screen
     my_screenshot_image = pyautogui.screenshot()
 
     # Only save region of interest
-    my_screenshot_image = my_screenshot_image.crop((250, 26, 250+456, 1010))
+    my_screenshot_image = my_screenshot_image.crop((250, 26, 250 + 456, 1010))
     my_screenshot_image.save(os.path.join("data", f"{i}.png"))
     print(f"Screenshot {i} saved.")
     time.sleep(0.5)  # Add a small delay to avoid overwhelming the system
+
 
 # Create data folder if it doesn't exist
 if not os.path.exists("data"):
@@ -52,14 +54,14 @@ for line in sys.stdin:
             if 0 <= x < 1080 and 0 <= y < 2400:
                 # Log the event: timestamp and coordinates
                 # if y < 2000:
-                    # wait 3.6 seconds before taking the screenshot
-                    # time.sleep(3.6)
+                # wait 3.6 seconds before taking the screenshot
+                # time.sleep(3.6)
 
                 touch_timestamp = time.time()
                 save_screenshot(touch_timestamp)
 
                 # Create the touch event file in the touch_events folder
-                with open(os.path.join('touch_events', f"{touch_timestamp}.txt"), 'w') as touch_file:
+                with open(os.path.join("touch_events", f"{touch_timestamp}.txt"), "w") as touch_file:
                     touch_file.write(f"{x},{y}\n")
             # cv2.circle(img, (x, y), 10, (0, 0, 255), -1)  # Red dot
             # cv2.imshow("Points", img)

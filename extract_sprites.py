@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import os
 
+
 def extract_sprites_from_sheet(sheet_path, output_dir, character_name):
     """
     Extracts individual sprites from a sprite sheet and saves them as transparent PNGs.
@@ -33,18 +34,18 @@ def extract_sprites_from_sheet(sheet_path, output_dir, character_name):
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     print(f"Found {len(contours)} potential sprites for '{character_name}'.")
-    
+
     sprite_count = 0
     for i, contour in enumerate(contours):
         # --- Step 3: Filter out small noise or giant contours ---
         area = cv2.contourArea(contour)
         # if area < 400 or area > (img.shape[0] * img.shape[1] * 0.9): # Ignore tiny noise and huge areas
-        if area < 900 or area > 8000: # Ignore tiny noise and huge areas
+        if area < 900 or area > 8000:  # Ignore tiny noise and huge areas
             continue
 
         x, y, w, h = cv2.boundingRect(contour)
-        cropped_bgr = img_bgr[y:y+h, x:x+w]
-        cropped_mask = mask[y:y+h, x:x+w]
+        cropped_bgr = img_bgr[y : y + h, x : x + w]
+        cropped_mask = mask[y : y + h, x : x + w]
 
         # Create a blank mask for the cropped region
         contour_mask = np.zeros((h, w), dtype=np.uint8)
@@ -59,16 +60,17 @@ def extract_sprites_from_sheet(sheet_path, output_dir, character_name):
         output_path = os.path.join(char_output_dir, f"{sprite_count}.png")
         cv2.imwrite(output_path, cropped_bgra)
         sprite_count += 1
-        
+
     print(f"Successfully extracted and saved {sprite_count} sprites to '{char_output_dir}'")
 
-if __name__ == '__main__':
-    SPRITE_SHEET_DIR = 'sprite_sheets'
-    OUTPUT_SPRITE_DIR = 'extracted_sprites'
+
+if __name__ == "__main__":
+    SPRITE_SHEET_DIR = "sprite_sheets"
+    OUTPUT_SPRITE_DIR = "extracted_sprites"
 
     # Process all images in the sprite sheet directory
     for filename in os.listdir(SPRITE_SHEET_DIR):
-        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+        if filename.lower().endswith((".png", ".jpg", ".jpeg")):
             character_name = os.path.splitext(filename)[0]
             sheet_path = os.path.join(SPRITE_SHEET_DIR, filename)
             print(f"\nProcessing {sheet_path}...")
