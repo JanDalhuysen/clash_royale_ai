@@ -1,8 +1,0 @@
-{
-  "servers": {
-    "Get_special_Pi_number_of_the_day": {
-      "command": "node",
-      "args": ["C:/Apps/janmcp/my-mcp-server/server.js"]
-    }
-  }
-}

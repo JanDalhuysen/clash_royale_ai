@@ -12,3 +12,17 @@ ig_valid
 
 # Big folder containing all the Clash Royale Cards Sprites
 all_clash_royale_cards_sprites
+
+data
+images_to_label
+labels
+templates
+
+train/images
+train/labels
+
+test/images
+test/labels
+
+valid/images
+valid/labels
