@@ -3,18 +3,17 @@
 <img width="754" height="738" alt="labler" src="https://github.com/user-attachments/assets/330cc99a-a90b-4906-8d82-05c295759fe6" />
 
 - download_cards.py
-extract_sprites.py
-generate_troop_data.py
-predict_dual.py
+  extract_sprites.py
+  generate_troop_data.py
+  predict_dual.py
 
 - auto_label.py
-data.yaml
-get_data.py
-labler.py
-predict_video.py
+  data.yaml
+  get_data.py
+  labler.py
+  predict_video.py
 
 - train.py
-
 
 This project contains scripts for automating and analyzing Clash Royale gameplay through computer vision and machine learning:
 
@@ -70,26 +69,31 @@ This project contains scripts for automating and analyzing Clash Royale gameplay
 ## Usage
 
 Capture game screenshots periodically (5s intervals):
+
 ```bash
 python get_data.py
 ```
 
 Capture screenshots on card placement (requires ADB):
+
 ```bash
 adb shell getevent | python get_data_on_touch.py
 ```
 
 Label collected images with YOLO format:
+
 ```bash
 python labler.py
 ```
 
 Train the detection model (uses GPU if available):
+
 ```bash
 python train.py
 ```
 
 Run live game detection:
+
 ```bash
 python predict_video.py
 ```

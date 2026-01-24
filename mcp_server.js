@@ -14,7 +14,7 @@ const PYTHON_API_BASE_URL = "http://localhost:5000";
 // Create an MCP server
 const server = new McpServer({
   name: "clash_royale_ai",
-  version: "1.0.0"
+  version: "1.0.0",
 });
 
 // Get Game State Tool
@@ -24,22 +24,23 @@ server.tool("get_game_state", {}, async () => {
     const response = await axios.get(`${PYTHON_API_BASE_URL}/get_game_state`);
     // We can stringify the JSON to return a clean text block to the LLM
     return {
-      content: [{ type: "text", text: JSON.stringify(response.data, null, 2) }]
+      content: [{ type: "text", text: JSON.stringify(response.data, null, 2) }],
     };
   } catch (error) {
     console.error("Error getting game state:", error.message);
     return {
-      content: [{ type: "text", text: "Error: Could not retrieve game state from the Python server." }]
+      content: [{ type: "text", text: "Error: Could not retrieve game state from the Python server." }],
     };
   }
 });
 // Place Card Tool
-server.tool("place_card_at_xy",
+server.tool(
+  "place_card_at_xy",
   {
     cardName: z.string().describe("The name of the card to play from your current hand. Must be an exact match."),
     x: z.number().describe("The x-coordinate (horizontal position) on the game board to place the card."),
     y: z.number().describe("The y-coordinate (vertical position) on the game board to place the card."),
-    thought: z.string().describe("Your reasoning for making this specific move at this location.")
+    thought: z.string().describe("Your reasoning for making this specific move at this location."),
   },
   async ({ cardName, x, y, thought }) => {
     console.log(`MCP Server: Received instruction to place ${cardName} at (${x},${y}). Reason: ${thought}`);
@@ -50,17 +51,16 @@ server.tool("place_card_at_xy",
         y: y,
       });
       return {
-        content: [{ type: "text", text: `Action successful: ${response.data.message}` }]
+        content: [{ type: "text", text: `Action successful: ${response.data.message}` }],
       };
     } catch (error) {
       console.error("Error placing card:", error.message);
       return {
-        content: [{ type: "text", text: "Error: The card placement action failed." }]
+        content: [{ type: "text", text: "Error: The card placement action failed." }],
       };
     }
-  }
+  },
 );
-
 
 // Add an addition tool
 // server.tool("special_Pi_number_of_the_day",
@@ -73,9 +73,6 @@ server.tool("place_card_at_xy",
 // Start receiving messages on stdin and sending messages on stdout
 const transport = new StdioServerTransport();
 await server.connect(transport);
-
-
-
 
 // // --- 1. Define Tool Schemas with Zod ---
 // // These schemas describe the tools to the LLM. The descriptions are very important!
@@ -144,7 +141,7 @@ await server.connect(transport);
 
 // async function gameLoop() {
 //   console.log("--- Starting Clash Royale AI Agent ---");
-  
+
 //   // The System Prompt: This is where you give the LLM its instructions and persona.
 //   const systemPrompt = `
 //     You are a world-class, strategic Clash Royale professional player. Your goal is to win the game by destroying more of the opponent's towers than they destroy of yours.
@@ -169,10 +166,10 @@ await server.connect(transport);
 //     console.log(`\n--- Turn ${turn} ---`);
 
 //     const response = await agent.run(conversation);
-    
+
 //     // Add the AI's response to the conversation history
 //     conversation.push(response);
-    
+
 //     console.log("AI Response:", response);
 
 //     // If the AI made a move, there's a natural delay. If not, wait a bit.
