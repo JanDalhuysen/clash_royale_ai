@@ -26,3 +26,15 @@ test/labels
 
 valid/images
 valid/labels
+
+runs/detect
+
+bdata
+bimages_to_label
+blabels
+btemplates
+
+bbdata
+bbimages_to_label
+bblabels
+bbtemplates
