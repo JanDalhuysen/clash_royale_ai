@@ -172,6 +172,19 @@ def get_ordered_class_ids():
     return all_class_ids
 
 
+def get_search_regions(img_height, mode):
+    """Return the vertical search bands that should be scanned for cards."""
+    band_height = min(200, img_height)
+    regions = [(max(0, img_height - band_height), img_height)]
+
+    if mode == "replay":
+        top_band = (0, band_height)
+        if top_band not in regions:
+            regions.insert(0, top_band)
+
+    return regions
+
+
 def create_yolo_label(
     img,
     template_path,
@@ -180,7 +193,7 @@ def create_yolo_label(
     confidence_threshold=0.6,
     scale_steps=10,
     box_scale_factor=0.55,
-    max_detections=1,
+    search_regions=None,
 ):
     """Create YOLO label file using multi-scale template matching.
 
@@ -192,25 +205,23 @@ def create_yolo_label(
         confidence_threshold: Minimum confidence for a valid match
         scale_steps: Number of different scales to try
         box_scale_factor: Factor to scale the final bounding box (default 0.55 = 55% of original size)
-        max_detections: Maximum number of detections to return for this template
+        search_regions: List of (y_start, y_end) bands to scan within the image
     """
     template = cv2.imread(template_path)
     if template is None:
         print(f"Error: Could not load template {template_path}")
         return []
 
-    # Busy with processing screenshot img
-
-    # Get original template dimensions
-    h, w = template.shape[:2]
-
-    # scale_steps = 10
-
     detections = []
-    working_img = img.copy()
+    if search_regions is None:
+        search_regions = [(0, img.shape[0])]
 
-    # Keep searching for additional instances when replay mode allows it.
-    for _ in range(max_detections):
+    # Search only within the allowed bands. This avoids the middle of the screen entirely.
+    for region_start_y, region_end_y in search_regions:
+        search_img = img[region_start_y:region_end_y, :]
+        if search_img.size == 0:
+            continue
+
         best_match = None
         best_max_val = -1
 
@@ -227,38 +238,30 @@ def create_yolo_label(
             resized_template = cv2.resize(template, None, fx=scale_factor, fy=scale_factor)
             th, tw = resized_template.shape[:2]
 
-            # Skip if template is larger than image
-            if tw > working_img.shape[1] or th > working_img.shape[0]:
+            # Skip if template is larger than the search band.
+            if tw > search_img.shape[1] or th > search_img.shape[0]:
                 continue
 
             # Template matching
-            result = cv2.matchTemplate(working_img, resized_template, cv2.TM_CCOEFF_NORMED)
+            result = cv2.matchTemplate(search_img, resized_template, cv2.TM_CCOEFF_NORMED)
             min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
 
-            # Keep track of best match across all scales
+            # Keep track of best match across all scales for this region.
             if max_val > best_max_val:
                 best_max_val = max_val
                 best_match = (max_loc, tw, th, scale_factor)
 
-        # Stop if no more valid matches are found.
         if not best_match or best_max_val < confidence_threshold:
-            break
+            continue
 
         top_left, tw, th, scale_factor = best_match
+        x = top_left[0]
+        y = top_left[1] + region_start_y
+        width = tw
+        height = th
+        bottom_right = (x + width, y + height)
 
-        # If the match is not in the top or bottom of the image, discard it and keep searching.
-        # if top_left[1] > 200 and top_left[1] < img.shape[0] - 200:
-        # print(f"Discarded {os.path.basename(template_path)} with confidence {best_max_val:.2f} at scale {scale_factor:.2f} because it is not in the top or bottom of the image")
-        # cv2.rectangle(working_img, top_left, (top_left[0] + tw, top_left[1] + th), (0, 0, 0), thickness=-1)
-        # continue
-
-        print(f"Matched {os.path.basename(template_path)} with confidence {best_max_val:.2f} at scale {scale_factor:.2f}")
-        bottom_right = (top_left[0] + tw, top_left[1] + th)
-
-        # Get bounding box coordinates
-        x, y = top_left
-        width = bottom_right[0] - top_left[0]
-        height = bottom_right[1] - top_left[1]
+        print(f"Matched {os.path.basename(template_path)} with confidence {best_max_val:.2f} at scale {scale_factor:.2f} in band {region_start_y}-{region_end_y}")
 
         # If the matched card is in the top half of the image add it to the player 1 set
         if y + height / 2 < img.shape[0] / 2:
@@ -294,9 +297,6 @@ def create_yolo_label(
 
         detections.append((class_id, x_center, y_center, norm_width, norm_height))
 
-        # Mask out the matched region so replay mode can find a second copy of the same card.
-        cv2.rectangle(working_img, top_left, bottom_right, (0, 0, 0), thickness=-1)
-
     return detections
 
 
@@ -306,14 +306,14 @@ def main():
     templates_dir = "templates"
     output_dir = "labels"
 
-    # parser = argparse.ArgumentParser(description="Generate YOLO labels from Clash Royale screenshots using template matching.")
-    # parser.add_argument(
-    #     "--mode",
-    #     choices=["live", "replay"],
-    #     default="live",
-    #     help="live allows one detection per card per image; replay allows up to two detections per card",
-    # )
-    # args = parser.parse_args()
+    parser = argparse.ArgumentParser(description="Generate YOLO labels from Clash Royale screenshots using template matching.")
+    parser.add_argument(
+        "--mode",
+        choices=["live", "replay"],
+        default="replay",
+        help="live scans only the bottom 200 pixels; replay scans the top 200 and bottom 200 pixels",
+    )
+    args = parser.parse_args()
 
     # Configuration parameters
 
@@ -329,7 +329,8 @@ def main():
     # Maximum number of detections to return for each card
     # set to 1 for live mode
     # 2 for replay mode / TV Royale
-    max_detections_per_card = 2
+    # args.mode = "live"
+    # args.mode = "replay"
 
     # Create output directory if it doesn't exist
     Path(output_dir).mkdir(exist_ok=True)
@@ -374,7 +375,7 @@ def main():
                     confidence_threshold=confidence_threshold,
                     scale_steps=scale_steps,
                     box_scale_factor=box_scale_factor,
-                    max_detections=max_detections_per_card,
+                    search_regions=get_search_regions(img.shape[0], args.mode),
                 )
                 all_boxes.extend(boxes)
             # else:
