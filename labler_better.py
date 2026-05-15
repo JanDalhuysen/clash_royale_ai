@@ -283,10 +283,11 @@ card_e_9 = ["ThreeMusketeersCard"]
 
 WINDOW_NAME = "YOLO Labeling Tool"
 BOX_COLOR = (0, 255, 0)  # Green for current box
-SAVED_BOX_COLOR = (255, 100, 0)  # Blue for saved boxes
+# SAVED_BOX_COLOR = (255, 100, 0)  # Blue for saved boxes
+SAVED_BOX_COLOR = (255, 255, 255)
 TEXT_COLOR = (0, 0, 0)  # Black for text
 FONT = cv2.FONT_HERSHEY_SIMPLEX
-FONT_SCALE = 0.7
+FONT_SCALE = 0.5
 LINE_THICKNESS = 2
 
 # Folder for touch events
@@ -481,6 +482,10 @@ def redraw_image():
     for item in current_bboxes:
         class_id = item["class_id"]
         label_text = get_class_name_from_id(class_id)
+        # remove the words card or troop from the label text
+        label_text = label_text.replace("Card", "").replace("Troop", "")
+        # only keep the first 10 characters of the label text
+        # label_text = label_text[:10]
 
         x_min, y_min, x_max, y_max = item["bbox"]
         cv2.rectangle(
@@ -679,15 +684,9 @@ def create_gui():
     ttk.Label(filter_frame, text="Filter:").pack(side=tk.LEFT, padx=5)
 
     filter_var = tk.StringVar(value="all")
-    ttk.Radiobutton(
-        filter_frame, text="All", variable=filter_var, value="all", command=lambda: filter_cards(filter_var.get(), search_var.get())
-    ).pack(side=tk.LEFT)
-    ttk.Radiobutton(
-        filter_frame, text="Cards", variable=filter_var, value="card", command=lambda: filter_cards(filter_var.get(), search_var.get())
-    ).pack(side=tk.LEFT)
-    ttk.Radiobutton(
-        filter_frame, text="Troops", variable=filter_var, value="troop", command=lambda: filter_cards(filter_var.get(), search_var.get())
-    ).pack(side=tk.LEFT)
+    ttk.Radiobutton(filter_frame, text="All", variable=filter_var, value="all", command=lambda: filter_cards(filter_var.get(), search_var.get())).pack(side=tk.LEFT)
+    ttk.Radiobutton(filter_frame, text="Cards", variable=filter_var, value="card", command=lambda: filter_cards(filter_var.get(), search_var.get())).pack(side=tk.LEFT)
+    ttk.Radiobutton(filter_frame, text="Troops", variable=filter_var, value="troop", command=lambda: filter_cards(filter_var.get(), search_var.get())).pack(side=tk.LEFT)
 
     # Search box
     ttk.Label(filter_frame, text="Search:").pack(side=tk.LEFT, padx=(20, 5))
